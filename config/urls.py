@@ -36,7 +36,7 @@ router.register(r'promotions', PromotionViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # все API будут доступны по префиксу /api/
+    path('', include(router.urls)),  # все API будут доступны по префиксу /api/
 ]
 
 # Добавляем обслуживание медиафайлов в режиме разработки

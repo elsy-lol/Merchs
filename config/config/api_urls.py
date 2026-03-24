@@ -1,5 +1,10 @@
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 
+# Твои импорты
 from shop.views import CategoryViewSet, ProductViewSet, ProductVariantViewSet, ProductImageViewSet
 from users.views import UserViewSet
 from content.views import PostViewSet, MediaFileViewSet
@@ -28,4 +33,21 @@ router.register(r'likes', LikeViewSet, basename='like')
 router.register(r'coupons', CouponViewSet)
 router.register(r'promotions', PromotionViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+    # Админка Django
+    path('admin/', admin.site.urls),
+    
+    # Авторизация в браузере для DRF (кнопка Login в API браузере)
+    path('api-auth/', include('rest_framework.urls')),
+    
+    # Все API маршруты под префиксом /api/
+    # Теперь твои продукты будут доступны по адресу /api/products/
+    path('api/', include(router.urls)),
+]
+
+# Отдача медиа-файлов (фото товаров) в режиме разработки
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    # Если будешь использовать Swagger/Redoc документацию (рекомендую для такого большого API)
+    # urlpatterns += [path('api/docs/', include('drf_spectacular.urls'))]
