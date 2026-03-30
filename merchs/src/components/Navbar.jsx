@@ -8,12 +8,15 @@ const Navbar = () => {
   const { count } = useCart();
   const navigate = useNavigate();
 
-  const handleLogout = async () => { await logout(); navigate('/'); };
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <Link to="/" className="navbar-logo">🛍️ MerchMarket</Link>
+        <Link to="/" className="navbar-logo">🚀 MerchMarket</Link>
         
         <div className="navbar-menu">
           <Link to="/shop" className="navbar-link">Каталог</Link>

@@ -1,10 +1,10 @@
 /* ========================================
-   PRODUCT CARD - MODERN DARK
+   PRODUCT CARD - COSMIC SPACE
    ======================================== */
 
 .product-card {
   display: block;
-  background: var(--bg-secondary);
+  background: var(--space-medium);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -20,15 +20,15 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--gradient-primary);
+  background: var(--gradient-cosmic);
   transform: scaleX(0);
   transition: transform var(--transition-base);
 }
 
 .product-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-xl);
-  transform: translateY(-8px);
+  border-color: var(--neon-purple);
+  box-shadow: var(--glow-lg);
+  transform: translateY(-10px);
 }
 
 .product-card:hover::before {
@@ -37,8 +37,8 @@
 
 .product-card-image {
   position: relative;
-  height: 280px;
-  background: var(--bg-tertiary);
+  height: 300px;
+  background: var(--space-light);
   overflow: hidden;
 }
 
@@ -46,11 +46,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-card:hover .product-card-image img {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .product-card-overlay {
@@ -59,7 +59,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(3, 0, 20, 0.9) 100%);
   opacity: 0;
   transition: opacity var(--transition-base);
 }
@@ -72,27 +72,28 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  padding: 0.375rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border-radius: var(--radius-full);
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 10;
+  box-shadow: var(--glow-sm);
 }
 
 .product-card-badge-official {
-  background: rgba(99, 102, 241, 0.9);
+  background: rgba(168, 85, 247, 0.9);
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.5);
 }
 
 .product-card-badge-second {
-  background: rgba(16, 185, 129, 0.9);
+  background: rgba(6, 182, 212, 0.9);
   color: white;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
 }
 
 .product-card-condition {
@@ -100,7 +101,7 @@
   top: 12px;
   right: 12px;
   padding: 0.375rem 0.75rem;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(3, 0, 20, 0.9);
   backdrop-filter: blur(8px);
   color: var(--text-secondary);
   border-radius: var(--radius-full);
@@ -129,25 +130,26 @@
 }
 
 .product-card-action-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(21, 26, 37, 0.9);
+  background: rgba(26, 26, 62, 0.9);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: all var(--transition-fast);
 }
 
 .product-card-action-btn:hover {
-  background: var(--accent-primary);
+  background: var(--neon-purple);
   color: white;
-  border-color: var(--accent-primary);
-  transform: scale(1.1);
+  border-color: var(--neon-purple);
+  transform: scale(1.15);
+  box-shadow: var(--glow-md);
 }
 
 .product-card-no-image {
@@ -157,7 +159,7 @@
   justify-content: center;
   color: var(--text-muted);
   font-size: 4rem;
-  background: var(--gradient-secondary);
+  background: var(--gradient-nebula);
 }
 
 .product-card-info {
@@ -165,8 +167,8 @@
 }
 
 .product-card-name {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
   line-height: 1.4;
@@ -178,7 +180,8 @@
 }
 
 .product-card:hover .product-card-name {
-  color: var(--accent-primary);
+  color: var(--neon-purple);
+  text-shadow: var(--glow-sm);
 }
 
 .product-card-creator,
@@ -201,28 +204,28 @@
 }
 
 .product-card-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: var(--gradient-primary);
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: var(--gradient-cosmic);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: var(--glow-sm);
 }
 
 .product-card-negotiable {
   font-size: 0.7rem;
-  color: var(--accent-success);
-  font-weight: 600;
-  background: rgba(16, 185, 129, 0.1);
-  padding: 0.25rem 0.5rem;
+  color: #10b981;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  padding: 0.25rem 0.6rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-/* Адаптивность */
 @media (max-width: 640px) {
   .product-card-image {
-    height: 220px;
+    height: 240px;
   }
   
   .product-card-actions {

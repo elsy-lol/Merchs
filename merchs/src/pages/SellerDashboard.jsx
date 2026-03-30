@@ -23,7 +23,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="seller-dashboard">
-      <h1 className="seller-dashboard-title">Панель продавца</h1>
+      <h1 className="seller-dashboard-title">Панель продавца 📦</h1>
       <div className="seller-stats">
         <div className="seller-stat-card"><div className="seller-stat-value">{listings.length}</div><div className="seller-stat-label">Товаров</div></div>
         <div className="seller-stat-card"><div className="seller-stat-value">{listings.filter(p => p.status === 'published').length}</div><div className="seller-stat-label">Опубликовано</div></div>
@@ -31,7 +31,7 @@ const SellerDashboard = () => {
         <div className="seller-stat-card"><div className="seller-stat-value">{listings.filter(p => p.status === 'sold').length}</div><div className="seller-stat-label">Продано</div></div>
       </div>
       <div className="seller-actions">
-        <button className="seller-add-product-btn" onClick={() => alert('Форма добавления товара')}>+ Добавить товар</button>
+        <button className="seller-add-product-btn" onClick={() => alert('Форма добавления товара')}>✨ Добавить товар</button>
       </div>
       <div className="seller-listings">
         <div className="seller-listings-header"><h3 className="seller-listings-title">Мои товары</h3></div>

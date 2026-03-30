@@ -12,7 +12,6 @@ import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import SellerDashboard from './pages/SellerDashboard';
 import './App.css';
-import './index.css';
 
 function App() {
   return (

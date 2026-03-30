@@ -1,5 +1,5 @@
 /* ========================================
-   MODERN DARK THEME - GLOBAL STYLES
+   COSMIC SPACE THEME - GLOBAL STYLES
    ======================================== */
 
 * {
@@ -9,78 +9,105 @@
 }
 
 :root {
-  /* Цвета фона */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #151a25;
-  --bg-tertiary: #1f2937;
-  --bg-hover: #2d3748;
-  --bg-elevated: #1e293b;
+  /* Космические цвета фона */
+  --space-black: #030014;
+  --space-dark: #0a0a1a;
+  --space-medium: #12122a;
+  --space-light: #1a1a3e;
+  --space-hover: #252550;
   
   /* Цвета текста */
-  --text-primary: #f7fafc;
-  --text-secondary: #a0aec0;
-  --text-muted: #718096;
-  --text-inverse: #0a0e1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8d0;
+  --text-muted: #6b6b8d;
+  --text-glow: #ffffff;
   
-  /* Цвета границ */
-  --border-color: #2d3748;
-  --border-hover: #4a5568;
-  --border-accent: #6366f1;
-  
-  /* Акцентные цвета */
-  --accent-primary: #6366f1;
-  --accent-primary-hover: #4f46e5;
-  --accent-secondary: #8b5cf6;
-  --accent-success: #10b981;
-  --accent-success-hover: #059669;
-  --accent-danger: #ef4444;
-  --accent-danger-hover: #dc2626;
-  --accent-warning: #f59e0b;
+  /* Неоновые акценты */
+  --neon-purple: #a855f7;
+  --neon-purple-glow: rgba(168, 85, 247, 0.5);
+  --neon-blue: #3b82f6;
+  --neon-blue-glow: rgba(59, 130, 246, 0.5);
+  --neon-pink: #ec4899;
+  --neon-pink-glow: rgba(236, 72, 153, 0.5);
+  --neon-cyan: #06b6d4;
+  --neon-cyan-glow: rgba(6, 182, 212, 0.5);
   
   /* Градиенты */
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --gradient-secondary: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  --gradient-accent: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+  --gradient-cosmic: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+  --gradient-nebula: linear-gradient(135deg, #1a1a3e 0%, #0a0a1a 100%);
+  --gradient-star: linear-gradient(135deg, #ffffff 0%, #b8b8d0 100%);
   
-  /* Тени */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  /* Тени и свечение */
+  --glow-sm: 0 0 10px rgba(168, 85, 247, 0.3);
+  --glow-md: 0 0 20px rgba(168, 85, 247, 0.5);
+  --glow-lg: 0 0 40px rgba(168, 85, 247, 0.7);
+  --glow-xl: 0 0 60px rgba(168, 85, 247, 0.9);
+  
+  /* Границы */
+  --border-color: #2a2a5a;
+  --border-glow: #a855f7;
   
   /* Радиусы */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
   --radius-full: 9999px;
   
   /* Переходы */
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.25s ease;
-  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Анимированный космический фон */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: var(--bg-primary);
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--space-black);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Звёздный фон */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+    radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+    radial-gradient(2px 2px at 160px 120px, #ffffff, transparent),
+    radial-gradient(1px 1px at 230px 80px, #ffffff, transparent),
+    radial-gradient(2px 2px at 300px 150px, #ffffff, transparent);
+  background-size: 350px 200px;
+  animation: twinkle 5s infinite;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
 /* Ссылки */
 a {
   text-decoration: none;
   color: inherit;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 a:hover {
-  color: var(--accent-primary);
+  color: var(--neon-purple);
+  text-shadow: var(--glow-sm);
 }
 
 /* Кнопки */
@@ -98,7 +125,7 @@ button {
 input, select, textarea {
   font-family: inherit;
   font-size: inherit;
-  background: var(--bg-tertiary);
+  background: var(--space-medium);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
@@ -106,8 +133,8 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--neon-purple);
+  box-shadow: var(--glow-sm);
 }
 
 input::placeholder, textarea::placeholder {
@@ -133,24 +160,26 @@ ul, ol {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: var(--space-dark);
   border-left: 1px solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-hover);
+  background: var(--gradient-cosmic);
   border-radius: var(--radius-full);
-  border: 2px solid var(--bg-secondary);
+  border: 2px solid var(--space-dark);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-hover);
+  background: var(--neon-purple);
+  box-shadow: var(--glow-md);
 }
 
 /* Выделение текста */
 ::selection {
-  background: var(--accent-primary);
+  background: var(--neon-purple);
   color: white;
+  text-shadow: var(--glow-sm);
 }
 
 /* Анимации */
@@ -162,7 +191,7 @@ ul, ol {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -173,7 +202,7 @@ ul, ol {
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-30px);
   }
   to {
     opacity: 1;
@@ -184,7 +213,7 @@ ul, ol {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -192,13 +221,23 @@ ul, ol {
   }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: var(--glow-md); }
+  50% { box-shadow: var(--glow-lg); }
 }
 
 @keyframes shimmer {
@@ -206,27 +245,68 @@ ul, ol {
   100% { background-position: 200% 0; }
 }
 
+@keyframes starMove {
+  from { background-position: 0 0; }
+  to { background-position: 100% 100%; }
+}
+
 /* Утилиты анимаций */
 .animate-fade-in { animation: fadeIn var(--transition-slow); }
 .animate-slide-up { animation: slideUp var(--transition-slow); }
 .animate-slide-down { animation: slideDown var(--transition-slow); }
 .animate-scale-in { animation: scaleIn var(--transition-slow); }
-.animate-pulse { animation: pulse 2s infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
 .animate-spin { animation: spin 1s linear infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
 
-/* Glassmorphism эффект */
+/* Glassmorphism */
 .glass {
-  background: rgba(21, 26, 37, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(26, 26, 62, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
 }
 
-/* Glow эффект */
+.glass-dark {
+  background: rgba(10, 10, 26, 0.8);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* Glow эффекты */
 .glow {
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--glow-md);
 }
 
 .glow-hover:hover {
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+  box-shadow: var(--glow-lg);
+}
+
+.glow-text {
+  text-shadow: var(--glow-sm);
+}
+
+.glow-text-lg {
+  text-shadow: var(--glow-md);
+}
+
+/* Gradient текст */
+.gradient-text {
+  background: var(--gradient-cosmic);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Border glow */
+.border-glow {
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
+}
+
+.border-glow:hover {
+  border-color: var(--neon-purple);
+  box-shadow: var(--glow-sm);
 }

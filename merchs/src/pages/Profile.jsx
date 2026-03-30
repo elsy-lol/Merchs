@@ -29,7 +29,7 @@ const Profile = () => {
           <div className="profile-info">
             <h2 className="profile-name">{profile.username}</h2>
             <p className="profile-email">{profile.email}</p>
-            <span className="profile-role">{profile.role === 'seller' ? 'Продавец' : 'Покупатель'}</span>
+            <span className="profile-role">{profile.role === 'seller' ? '📦 Продавец' : '🛒 Покупатель'}</span>
           </div>
         </div>
         <div className="profile-stats">
@@ -40,7 +40,7 @@ const Profile = () => {
       </div>
       <div className="profile-sections">
         <div className="profile-section">
-          <h3 className="profile-section-title">Мои заказы</h3>
+          <h3 className="profile-section-title">📦 Мои заказы</h3>
           {orders.length === 0 ? <p className="profile-empty">Пока нет заказов</p> : (
             <ul className="profile-section-list">
               {orders.slice(0, 5).map(order => (
@@ -55,7 +55,7 @@ const Profile = () => {
         </div>
         {profile.role === 'seller' && (
           <div className="profile-section">
-            <h3 className="profile-section-title">Мои объявления</h3>
+            <h3 className="profile-section-title">🛍️ Мои объявления</h3>
             {listings.length === 0 ? <p className="profile-empty">Пока нет товаров</p> : (
               <ul className="profile-section-list">
                 {listings.slice(0, 5).map(item => (

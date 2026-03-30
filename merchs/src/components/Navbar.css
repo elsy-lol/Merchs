@@ -1,5 +1,5 @@
 /* ========================================
-   NAVBAR - MODERN DARK
+   NAVBAR - COSMIC SPACE
    ======================================== */
 
 .navbar {
@@ -7,22 +7,22 @@
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 14, 26, 0.85);
+  background: rgba(3, 0, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(45, 55, 72, 0.5);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.3);
   z-index: 1000;
-  height: 72px;
+  height: 75px;
   transition: all var(--transition-base);
 }
 
 .navbar.scrolled {
-  background: rgba(10, 14, 26, 0.95);
-  box-shadow: var(--shadow-md);
+  background: rgba(3, 0, 20, 0.95);
+  box-shadow: var(--glow-md);
 }
 
 .navbar-content {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
   height: 100%;
@@ -32,20 +32,22 @@
 }
 
 .navbar-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: var(--gradient-primary);
+  font-size: 1.75rem;
+  font-weight: 900;
+  background: var(--gradient-cosmic);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: transform var(--transition-fast);
+  transition: all var(--transition-fast);
+  text-shadow: var(--glow-sm);
 }
 
 .navbar-logo:hover {
   transform: scale(1.05);
+  text-shadow: var(--glow-md);
 }
 
 .navbar-menu {
@@ -56,11 +58,11 @@
 
 .navbar-link {
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
   padding: 0.5rem 0;
   position: relative;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .navbar-link::after {
@@ -70,13 +72,15 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--gradient-primary);
+  background: var(--gradient-cosmic);
   transition: width var(--transition-base);
   border-radius: var(--radius-full);
+  box-shadow: var(--glow-sm);
 }
 
 .navbar-link:hover {
   color: var(--text-primary);
+  text-shadow: var(--glow-sm);
 }
 
 .navbar-link:hover::after {
@@ -94,35 +98,38 @@
 .navbar-cart {
   position: relative;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  border: 1px solid transparent;
 }
 
 .navbar-cart:hover {
-  background: var(--bg-tertiary);
+  background: var(--space-medium);
+  border-color: var(--neon-purple);
   color: var(--text-primary);
+  box-shadow: var(--glow-sm);
 }
 
 .navbar-cart-count {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  background: var(--gradient-primary);
+  top: -6px;
+  right: -6px;
+  background: var(--gradient-cosmic);
   color: white;
   font-size: 0.7rem;
-  font-weight: 700;
-  min-width: 20px;
-  height: 20px;
+  font-weight: 800;
+  min-width: 22px;
+  height: 22px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+  box-shadow: var(--glow-md);
   animation: scaleIn 0.3s ease;
 }
 
@@ -133,9 +140,9 @@
 }
 
 .navbar-btn {
-  padding: 0.625rem 1.25rem;
+  padding: 0.625rem 1.5rem;
   border-radius: var(--radius-md);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
   transition: all var(--transition-base);
 }
@@ -143,22 +150,26 @@
 .navbar-btn-login {
   color: var(--text-secondary);
   background: transparent;
+  border: 1px solid var(--border-color);
 }
 
 .navbar-btn-login:hover {
   color: var(--text-primary);
-  background: var(--bg-tertiary);
+  background: var(--space-medium);
+  border-color: var(--neon-purple);
+  box-shadow: var(--glow-sm);
 }
 
 .navbar-btn-register {
-  background: var(--gradient-primary);
+  background: var(--gradient-cosmic);
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  box-shadow: var(--glow-md);
+  border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
 .navbar-btn-register:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-lg);
 }
 
 .navbar-btn-logout {
@@ -167,7 +178,7 @@
 }
 
 .navbar-btn-logout:hover {
-  color: var(--accent-danger);
+  color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
 }
 
@@ -183,7 +194,7 @@
 }
 
 .navbar-toggle:hover {
-  background: var(--bg-tertiary);
+  background: var(--space-medium);
 }
 
 .navbar-toggle span {
@@ -213,10 +224,10 @@
 
   .navbar-menu {
     position: fixed;
-    top: 72px;
+    top: 75px;
     left: 0;
     right: 0;
-    background: rgba(10, 14, 26, 0.98);
+    background: rgba(3, 0, 20, 0.98);
     backdrop-filter: blur(20px);
     flex-direction: column;
     padding: 1.5rem;
@@ -241,7 +252,7 @@
   }
 
   .navbar-link:hover {
-    background: var(--bg-tertiary);
+    background: var(--space-medium);
   }
 
   .navbar-auth {

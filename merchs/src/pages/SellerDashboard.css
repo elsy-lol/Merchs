@@ -1,25 +1,24 @@
 /* ========================================
-   SELLER DASHBOARD - MODERN DARK
+   SELLER DASHBOARD - COSMIC SPACE
    ======================================== */
 
 .seller-dashboard {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 24px;
   animation: fadeIn 0.5s ease;
 }
 
 .seller-dashboard-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: var(--gradient-primary);
+  font-size: 2.75rem;
+  font-weight: 900;
+  background: var(--gradient-cosmic);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 2rem;
 }
 
-/* Stats */
 .seller-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -28,7 +27,7 @@
 }
 
 .seller-stat-card {
-  background: var(--bg-secondary);
+  background: var(--space-medium);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
@@ -44,15 +43,15 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--gradient-primary);
+  background: var(--gradient-cosmic);
   transform: scaleX(0);
   transition: transform var(--transition-base);
 }
 
 .seller-stat-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  border-color: var(--neon-purple);
+  box-shadow: var(--glow-lg);
+  transform: translateY(-5px);
 }
 
 .seller-stat-card:hover::before {
@@ -60,9 +59,9 @@
 }
 
 .seller-stat-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: var(--gradient-primary);
+  font-size: 2.75rem;
+  font-weight: 900;
+  background: var(--gradient-cosmic);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -76,20 +75,6 @@
   letter-spacing: 0.05em;
 }
 
-.seller-stat-change {
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-}
-
-.seller-stat-change.positive {
-  color: var(--accent-success);
-}
-
-.seller-stat-change.negative {
-  color: var(--accent-danger);
-}
-
-/* Actions */
 .seller-actions {
   display: flex;
   gap: 1rem;
@@ -98,87 +83,39 @@
 }
 
 .seller-add-product-btn {
-  padding: 0.875rem 1.5rem;
-  background: var(--gradient-primary);
+  padding: 1rem 2rem;
+  background: var(--gradient-cosmic);
   color: white;
   border: none;
   border-radius: var(--radius-md);
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   transition: all var(--transition-base);
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  box-shadow: var(--glow-md);
 }
 
 .seller-add-product-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+  transform: translateY(-4px);
+  box-shadow: var(--glow-lg);
 }
 
-.seller-export-btn {
-  padding: 0.875rem 1.5rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.seller-export-btn:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-hover);
-}
-
-/* Listings Table */
 .seller-listings {
-  background: var(--bg-secondary);
+  background: var(--space-medium);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--glow-sm);
 }
 
 .seller-listings-header {
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .seller-listings-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   color: var(--text-primary);
-}
-
-.seller-listings-filters {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.seller-listings-filter {
-  padding: 0.5rem 1rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.seller-listings-filter:hover {
-  border-color: var(--border-hover);
-}
-
-.seller-listings-filter.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: white;
 }
 
 .seller-listings-table {
@@ -194,83 +131,42 @@
 }
 
 .seller-listings-table th {
-  background: var(--bg-tertiary);
-  font-weight: 600;
+  background: var(--space-light);
+  font-weight: 700;
   color: var(--text-secondary);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.seller-listings-table tr {
-  transition: background var(--transition-fast);
-}
-
 .seller-listings-table tr:hover {
-  background: var(--bg-tertiary);
-}
-
-.seller-listings-table tr:last-child td {
-  border-bottom: none;
-}
-
-.seller-product-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.seller-product-image {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius-md);
-  background: var(--bg-tertiary);
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-}
-
-.seller-product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.seller-product-name {
-  font-weight: 500;
-  color: var(--text-primary);
+  background: var(--space-light);
 }
 
 .seller-status {
   padding: 0.375rem 0.875rem;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .seller-status-published {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.2);
   color: #6ee7b7;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.5);
 }
 
 .seller-status-pending {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(245, 158, 11, 0.2);
   color: #fcd34d;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.5);
 }
 
 .seller-status-sold {
-  background: rgba(107, 114, 128, 0.15);
+  background: rgba(107, 114, 128, 0.2);
   color: #9ca3af;
-  border: 1px solid rgba(107, 114, 128, 0.3);
-}
-
-.seller-status-draft {
-  background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(107, 114, 128, 0.5);
 }
 
 .seller-actions-cell {
@@ -280,48 +176,35 @@
 
 .seller-edit-btn,
 .seller-delete-btn {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border-radius: var(--radius-md);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-fast);
   border: 1px solid transparent;
 }
 
 .seller-edit-btn {
-  background: rgba(99, 102, 241, 0.1);
-  color: #a5b4fc;
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(168, 85, 247, 0.15);
+  color: #d8b4fe;
+  border-color: rgba(168, 85, 247, 0.5);
 }
 
 .seller-edit-btn:hover {
-  background: var(--accent-primary);
+  background: var(--neon-purple);
   color: white;
 }
 
 .seller-delete-btn {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
 }
 
 .seller-delete-btn:hover {
-  background: var(--accent-danger);
+  background: #ef4444;
   color: white;
-}
-
-/* Empty State */
-.seller-empty {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-muted);
-}
-
-.seller-empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
 }
 
 @media (max-width: 1024px) {
@@ -337,20 +220,5 @@
   
   .seller-actions {
     flex-direction: column;
-  }
-  
-  .seller-listings-table {
-    font-size: 0.875rem;
-  }
-  
-  .seller-listings-table th,
-  .seller-listings-table td {
-    padding: 0.75rem 1rem;
-  }
-  
-  .seller-product-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
   }
 }

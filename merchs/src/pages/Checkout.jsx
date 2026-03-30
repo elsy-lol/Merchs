@@ -29,12 +29,12 @@ const Checkout = () => {
       <h1 className="checkout-title">Оформление заказа</h1>
       <div className="checkout-grid">
         <form onSubmit={handleSubmit} className="checkout-form">
-          <h3 className="checkout-form-title">Адрес доставки</h3>
+          <h3 className="checkout-form-title">📍 Адрес доставки</h3>
           <div className="form-group">
             <label className="form-label">Адрес *</label>
             <textarea name="shipping_address" value={formData.shipping_address} onChange={(e) => setFormData({...formData, shipping_address: e.target.value})} required rows={4} className="form-input" placeholder="Город, улица, дом, квартира" />
           </div>
-          <button type="submit" disabled={loading} className="checkout-submit">{loading ? 'Обработка...' : 'Оплатить заказ'}</button>
+          <button type="submit" disabled={loading} className="checkout-submit btn btn-primary">{loading ? 'Обработка...' : '💳 Оплатить заказ'}</button>
         </form>
         <div className="checkout-summary">
           <h3 className="checkout-summary-title">Ваш заказ</h3>
@@ -51,7 +51,7 @@ const Checkout = () => {
             ))}
           </div>
           <div className="checkout-summary-row"><span>Товары:</span><span>{total.toFixed(2)} ₽</span></div>
-          <div className="checkout-summary-row"><span>Доставка:</span><span>Бесплатно</span></div>
+          <div className="checkout-summary-row"><span>Доставка:</span><span>Бесплатно 🚀</span></div>
           <div className="checkout-summary-total"><span>Итого:</span><span>{total.toFixed(2)} ₽</span></div>
         </div>
       </div>

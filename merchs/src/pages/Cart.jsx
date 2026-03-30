@@ -12,7 +12,7 @@ const Cart = () => {
         <div className="cart-empty">
           <div className="cart-empty-icon">🛒</div>
           <p className="cart-empty-text">Ваша корзина пуста</p>
-          <Link to="/shop" className="cart-empty-link">Перейти в каталог</Link>
+          <Link to="/shop" className="cart-empty-link">Перейти в каталог →</Link>
         </div>
       </div>
     );
@@ -43,8 +43,8 @@ const Cart = () => {
         <div className="cart-summary-row"><span>Товаров:</span><span>{cart.reduce((s, i) => s + i.quantity, 0)}</span></div>
         <div className="cart-summary-row"><span>Итого:</span><span className="cart-summary-total">{total.toFixed(2)} ₽</span></div>
         <div className="cart-summary-actions">
-          <button onClick={clearCart} className="cart-clear-btn">Очистить корзину</button>
-          <Link to="/checkout" className="btn btn-primary">Оформить заказ</Link>
+          <button onClick={clearCart} className="cart-clear-btn">🗑️ Очистить</button>
+          <Link to="/checkout" className="btn btn-primary cart-checkout-btn">Оформить заказ ✨</Link>
         </div>
       </div>
     </div>

@@ -16,16 +16,29 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    shopAPI.getProduct(id).then(res => setProduct(res.data)).catch(err => console.error(err)).finally(() => setLoading(false));
+    shopAPI.getProduct(id)
+      .then(res => setProduct(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     addToCart(product, quantity, selectedVariant);
-    alert('Добавлено в корзину!');
+    alert('✨ Добавлено в корзину!');
   };
 
-  if (loading) return <div className="loader"><div className="loader-spinner"></div></div>;
+  if (loading) {
+    return (
+      <div className="loader">
+        <div className="loader-spinner"></div>
+      </div>
+    );
+  }
+
   if (!product) return <div className="container text-center mt-8">Товар не найден</div>;
 
   return (
@@ -50,12 +63,12 @@ const ProductDetail = () => {
 
         <div className="product-detail-info">
           <span className={`product-detail-type ${product.product_type === 'official' ? 'product-detail-type-official' : 'product-detail-type-second'}`}>
-            {product.product_type === 'official' ? 'Официальный мерч' : 'Секонд-хенд'}
+            {product.product_type === 'official' ? '🎤 Официальный мерч' : '♻️ Секонд-хенд'}
           </span>
           <h1 className="product-detail-name">{product.name}</h1>
           {product.creator && <p className="product-detail-creator">🎤 {product.creator.name}</p>}
           <div className="product-detail-price">{product.price} ₽</div>
-          {product.condition && <p className="product-detail-condition">Состояние: {product.condition === 'excellent' ? 'Отличное' : product.condition}</p>}
+          {product.condition && <p className="product-detail-condition">Состояние: {product.condition === 'excellent' ? 'Отличное ⭐' : product.condition === 'good' ? 'Хорошее 👍' : 'Б/У'}</p>}
           <p className="product-detail-description">{product.description}</p>
 
           {product.variants?.length > 0 && (
@@ -75,13 +88,14 @@ const ProductDetail = () => {
           </div>
 
           <div className="product-detail-actions">
-            <button onClick={handleAddToCart} className="product-detail-add-to-cart">В корзину</button>
+            <button onClick={handleAddToCart} className="product-detail-add-to-cart">🛒 В корзину</button>
             <button className="product-detail-favorite">❤️</button>
           </div>
 
           <div className="product-detail-meta">
             <div className="product-detail-meta-item"><span className="product-detail-meta-label">Категория:</span><span className="product-detail-meta-value">{product.category_name}</span></div>
             <div className="product-detail-meta-item"><span className="product-detail-meta-label">Добавлен:</span><span className="product-detail-meta-value">{new Date(product.created_at).toLocaleDateString()}</span></div>
+            <div className="product-detail-meta-item"><span className="product-detail-meta-label">Просмотры:</span><span className="product-detail-meta-value">👁️ {product.views}</span></div>
           </div>
         </div>
       </div>

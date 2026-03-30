@@ -12,6 +12,7 @@ const ProductCard = ({ product }) => {
         ) : (
           <div className="product-card-no-image">📷</div>
         )}
+        <div className="product-card-overlay"></div>
         <span className={`product-card-badge ${isSecondHand ? 'product-card-badge-second' : 'product-card-badge-official'}`}>
           {isSecondHand ? 'Секонд' : 'Мерч'}
         </span>
@@ -20,6 +21,10 @@ const ProductCard = ({ product }) => {
             {product.condition === 'excellent' ? 'Отл.' : product.condition === 'good' ? 'Хор.' : 'Б/У'}
           </span>
         )}
+        <div className="product-card-actions">
+          <button className="product-card-action-btn">❤️</button>
+          <button className="product-card-action-btn">🔗</button>
+        </div>
       </div>
       
       <div className="product-card-info">

@@ -29,20 +29,23 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h2 className="auth-title">Вход</h2>
+          <div className="auth-logo">🚀</div>
+          <h2 className="auth-title gradient-text">Вход</h2>
           <p className="auth-subtitle">Нет аккаунта? <Link to="/register">Зарегистрироваться</Link></p>
         </div>
-        {error && <div className="auth-error">{error}</div>}
+        {error && <div className="auth-error">⚠️ {error}</div>}
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="auth-form-group">
             <label className="auth-label">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="auth-input" />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="auth-input" placeholder="your@email.com" />
           </div>
           <div className="auth-form-group">
             <label className="auth-label">Пароль</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" placeholder="••••••••" />
           </div>
-          <button type="submit" disabled={loading} className="auth-submit">{loading ? 'Вход...' : 'Войти'}</button>
+          <button type="submit" disabled={loading} className="auth-submit btn btn-primary">
+            {loading ? 'Вход...' : 'Войти'}
+          </button>
         </form>
       </div>
     </div>
