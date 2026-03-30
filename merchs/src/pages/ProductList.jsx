@@ -22,12 +22,13 @@ const ProductList = () => {
   };
 
   useEffect(() => {
+    console.log('🔄 Загрузка с фильтрами:', filters);
     fetchProducts(filters);
   }, [filters]);
 
   const handleFilterChange = (newFilters) => {
-    const cleaned = Object.fromEntries(Object.entries(newFilters).filter(([_, v]) => v !== ''));
-    setFilters(cleaned);
+    console.log('✨ Новые фильтры:', newFilters);
+    setFilters(newFilters);
   };
 
   if (loading) {
@@ -42,13 +43,23 @@ const ProductList = () => {
     <div className="product-list-page">
       <div className="product-list-header">
         <h1 className="page-title">Каталог товаров</h1>
-        <p className="product-list-count">Найдено: {products.length}</p>
+        <p className="product-list-count">
+          {Object.keys(filters).length > 0 && (
+            <span className="badge badge-primary">
+              🔍 Фильтров: {Object.keys(filters).length}
+            </span>
+          )}
+          {' '}Найдено: {products.length}
+        </p>
       </div>
+      
       <ProductFilter onFilterChange={handleFilterChange} />
+      
       {products.length === 0 ? (
         <div className="product-list-empty">
           <div className="product-list-empty-icon">🔍</div>
           <p className="product-list-empty-text">Товары не найдены</p>
+          <p className="product-list-empty-hint">Попробуйте изменить параметры поиска</p>
         </div>
       ) : (
         <div className="product-list-grid">
