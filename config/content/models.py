@@ -1,35 +1,23 @@
-# apps/content/models.py
 from django.db import models
+from django.conf import settings
 
-class Post(models.Model):
-    creator = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        related_name="posts",
-        limit_choices_to={"is_creator": True}
-    )
-    title = models.CharField(max_length=200)
+class BlogPost(models.Model):
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True)
     content = models.TextField()
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.CharField(max_length=100, blank=True)
+    is_published = models.BooleanField(default=False)
+    views = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name = "пост"
-        verbose_name_plural = "посты"
-        ordering = ["-created_at"]
+        ordering = ['-created_at']
 
-    def __str__(self):
-        return self.title
-
-
-class MediaFile(models.Model):
-    FILE_TYPES = [("audio", "Аудио"), ("video", "Видео"), ("image", "Изображение"), ("other", "Другое")]
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="media_files")
-    file = models.FileField(upload_to="content/media/")
-    file_type = models.CharField(max_length=10, choices=FILE_TYPES)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "медиафайл"
-        verbose_name_plural = "медиафайлы"
+class Announcement(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(null=True, blank=True)

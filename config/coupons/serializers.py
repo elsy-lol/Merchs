@@ -1,16 +1,13 @@
-# apps/coupons/serializers.py
 from rest_framework import serializers
-from .models import Coupon, Promotion
+from .models import Coupon
 
 class CouponSerializer(serializers.ModelSerializer):
+    is_expired = serializers.BooleanField(read_only=True)
     is_valid = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Coupon
-        fields = '__all__'
+        fields = ['id', 'code', 'discount_type', 'discount_value', 'min_order_amount', 'max_uses', 'usage_count', 'expires_at', 'is_active', 'is_expired', 'is_valid']
 
-
-class PromotionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Promotion
-        fields = '__all__'
+class CouponValidateSerializer(serializers.Serializer):
+    code = serializers.CharField()

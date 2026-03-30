@@ -1,33 +1,17 @@
-# apps/cart/models.py
 from django.db import models
 from django.conf import settings
 
 class Cart(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="cart",
-        null=True, blank=True
-    )
-    session_key = models.CharField(max_length=40, unique=True, null=True, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name = "корзина"
-        verbose_name_plural = "корзины"
-
-
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
-    variant = models.ForeignKey("shop.ProductVariant", on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)  # ✅ Исправлено
+    variant = models.ForeignKey('shop.ProductVariant', null=True, blank=True, on_delete=models.SET_NULL)  # ✅ Исправлено
     quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "элемент корзины"
-        verbose_name_plural = "элементы корзины"
-        unique_together = ["cart", "variant"]
-
-    @property
-    def total_price(self):
-        return self.quantity * self.variant.effective_price
+        unique_together = ['cart', 'product', 'variant']

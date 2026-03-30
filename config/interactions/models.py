@@ -1,25 +1,15 @@
-# apps/interactions/models.py
 from django.db import models
+from django.conf import settings
 
-class Wishlist(models.Model):
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="wishlist_items")
-    product = models.ForeignKey("shop.Product", on_delete=models.CASCADE, related_name="in_wishlists")
+class Favorite(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)  # ✅ Исправлено
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "избранное"
-        verbose_name_plural = "избранное"
-        unique_together = ["user", "product"]
-        ordering = ["-created_at"]
+        unique_together = ['user', 'product']
 
-
-class Like(models.Model):
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="likes")
-    product = models.ForeignKey("shop.Product", on_delete=models.CASCADE, related_name="likes")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "лайк"
-        verbose_name_plural = "лайки"
-        unique_together = ["user", "product"]
-        ordering = ["-created_at"]
+class ViewLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)  # ✅ Исправлено
+    viewed_at = models.DateTimeField(auto_now_add=True)

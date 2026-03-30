@@ -1,30 +1,32 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 class User(AbstractUser):
+    ROLE_CHOICES = [
+        ('buyer', 'Покупатель'),
+        ('seller', 'Продавец'),
+        ('both', 'И то и другое'),
+    ]
+    
+    phone = models.CharField(max_length=20, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='buyer')
+    is_verified_seller = models.BooleanField(default=False)
+    seller_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     bio = models.TextField(blank=True)
-    avatar = models.ImageField(upload_to="users/avatars/", blank=True, null=True)
-    is_creator = models.BooleanField(default=False)
-    subscriptions = models.ManyToManyField("self", symmetrical=False, related_name="subscribers", blank=True)
-
-    # Переопределяем группы и права с уникальными related_name
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    # Переопределяем группы и разрешения
     groups = models.ManyToManyField(
-        "auth.Group",
-        verbose_name="groups",
-        blank=True,
-        help_text="The groups this user belongs to.",
-        related_name="custom_user_set",
-        related_query_name="custom_user",
+        'auth.Group',
+        related_name='custom_user_set',
+        blank=True
     )
     user_permissions = models.ManyToManyField(
-        "auth.Permission",
-        verbose_name="user permissions",
-        blank=True,
-        help_text="Specific permissions for this user.",
-        related_name="custom_user_set",
-        related_query_name="custom_user",
+        'auth.Permission',
+        related_name='custom_user_permission_set',
+        blank=True
     )
 
-    class Meta:
-        verbose_name = "пользователь"
-        verbose_name_plural = "пользователи"
+    def __str__(self):
+        return self.username

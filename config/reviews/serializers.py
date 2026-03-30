@@ -1,17 +1,16 @@
-# apps/reviews/serializers.py
 from rest_framework import serializers
-from .models import Review, ReviewPhoto
-
-class ReviewPhotoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReviewPhoto
-        fields = ['id', 'image']
-
+from .models import Review
 
 class ReviewSerializer(serializers.ModelSerializer):
-    photos = ReviewPhotoSerializer(many=True, read_only=True)
-    user_username = serializers.CharField(source='user.username', read_only=True)
+    author_username = serializers.CharField(source='author.username', read_only=True)
+    author_avatar = serializers.ImageField(source='author.avatar', read_only=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'product', 'user', 'user_username', 'rating', 'comment', 'created_at', 'updated_at', 'photos']
+        fields = ['id', 'product', 'author', 'author_username', 'author_avatar', 'rating', 'title', 'content', 'created_at']
+        read_only_fields = ['author', 'created_at']
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['product', 'rating', 'title', 'content']

@@ -1,11 +1,19 @@
-# apps/shop/views.py
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, Product, ProductVariant, ProductImage
+from django.db.models import Q
+from .models import Creator, Category, Product, ProductVariant, ProductImage
 from .serializers import (
-    CategorySerializer, ProductSerializer, ProductCreateUpdateSerializer,
-    ProductVariantSerializer, ProductImageSerializer
+    CreatorSerializer, CategorySerializer, ProductSerializer, 
+    ProductCreateUpdateSerializer, ProductVariantSerializer, ProductImageSerializer
 )
+from common.permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
+
+class CreatorViewSet(viewsets.ModelViewSet):
+    queryset = Creator.objects.all()
+    serializer_class = CreatorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -15,28 +23,51 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'creator', 'available']
+    filterset_fields = ['category', 'creator', 'product_type', 'status']
     search_fields = ['name', 'description']
-    ordering_fields = ['price', 'created_at']
+    ordering_fields = ['price', 'created_at', 'updated_at', 'views']
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return ProductCreateUpdateSerializer
         return ProductSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Product.objects.all()
+        if user.is_staff:
+            return queryset
+        return queryset.filter(Q(status='published') | Q(owner=user))
+
     def perform_create(self, serializer):
-        # Автоматически устанавливаем создателя как текущего пользователя, если не передан
-        serializer.save(creator=self.request.user)
+        is_official = serializer.validated_data.get('product_type') == 'official'
+        if is_official and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("Только администрация может добавлять официальный мерч.")
+        if is_official:
+            serializer.save(status='published')
+        else:
+            serializer.save(owner=self.request.user, status='pending')
 
 class ProductVariantViewSet(viewsets.ModelViewSet):
     queryset = ProductVariant.objects.all()
     serializer_class = ProductVariantSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        product = serializer.validated_data.get('product')
+        if product.owner and product.owner != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("Нельзя добавлять варианты к чужому товару.")
+        serializer.save()
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        product = serializer.validated_data.get('product')
+        if product.owner and product.owner != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("Нельзя добавлять фото к чужому товару.")
+        serializer.save()

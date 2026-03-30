@@ -1,18 +1,14 @@
-# apps/content/serializers.py
 from rest_framework import serializers
-from .models import Post, MediaFile
+from .models import BlogPost, Announcement
 
-class MediaFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MediaFile
-        fields = ['id', 'file', 'file_type', 'uploaded_at']
-
-
-class PostSerializer(serializers.ModelSerializer):
-    media_files = MediaFileSerializer(many=True, read_only=True)
-    creator_username = serializers.CharField(source='creator.username', read_only=True)
+class BlogPostSerializer(serializers.ModelSerializer):
+    author_username = serializers.CharField(source='author.username', read_only=True)
 
     class Meta:
-        model = Post
-        fields = ['id', 'creator', 'creator_username', 'title', 'content',
-                  'created_at', 'updated_at', 'is_published', 'media_files']
+        model = BlogPost
+        fields = ['id', 'title', 'slug', 'content', 'author', 'author_username', 'category', 'is_published', 'views', 'created_at', 'updated_at']
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = ['id', 'title', 'content', 'is_active', 'created_at', 'expires_at']

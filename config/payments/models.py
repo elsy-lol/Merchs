@@ -1,20 +1,18 @@
-# apps/payments/models.py
 from django.db import models
+from django.conf import settings
 
-class PaymentTransaction(models.Model):
+class Payment(models.Model):
     STATUS_CHOICES = [
-        ("pending", "В обработке"), ("success", "Успешно"),
-        ("failed", "Ошибка"), ("refunded", "Возврат"),
+        ('pending', 'Ожидает'),
+        ('succeeded', 'Успешно'),
+        ('failed', 'Ошибка'),
+        ('refunded', 'Возврат'),
     ]
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="payments")
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
-    payment_method = models.CharField(max_length=50, blank=True)
-    transaction_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    response_data = models.JSONField(blank=True, default=dict)
 
-    class Meta:
-        verbose_name = "платёжная транзакция"
-        verbose_name_plural = "платёжные транзакции"
-        ordering = ["-created_at"]
+    order = models.ForeignKey('orders.Order', on_delete=models.CASCADE)  # ✅ Исправлено
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=255, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payment_url = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

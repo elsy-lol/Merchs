@@ -1,9 +1,15 @@
-# apps/payments/serializers.py
 from rest_framework import serializers
-from .models import PaymentTransaction
+from .models import Payment
 
-class PaymentTransactionSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PaymentTransaction
-        fields = '__all__'
-        read_only_fields = ['created_at']
+        model = Payment
+        fields = ['id', 'order', 'amount', 'payment_id', 'status', 'payment_url', 'created_at']
+        read_only_fields = ['payment_id', 'status', 'payment_url']
+
+class PaymentCreateSerializer(serializers.ModelSerializer):
+    order_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Payment
+        fields = ['order_id', 'amount']
