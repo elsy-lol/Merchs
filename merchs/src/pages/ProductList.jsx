@@ -13,28 +13,28 @@ const ProductList = () => {
     setLoading(true);
     try {
       const response = await shopAPI.getProducts(params);
-      setProducts(response.data.results || response.data);
+      setProducts(response.data.results || response.data || []);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Ошибка загрузки товаров:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log('🔄 Загрузка с фильтрами:', filters);
     fetchProducts(filters);
   }, [filters]);
 
   const handleFilterChange = (newFilters) => {
-    console.log('✨ Новые фильтры:', newFilters);
     setFilters(newFilters);
   };
 
   if (loading) {
     return (
-      <div className="loader">
-        <div className="loader-spinner"></div>
+      <div className="product-list-page">
+        <div className="loader">
+          <div className="loader-spinner"></div>
+        </div>
       </div>
     );
   }
@@ -42,15 +42,15 @@ const ProductList = () => {
   return (
     <div className="product-list-page">
       <div className="product-list-header">
-        <h1 className="page-title">Каталог товаров</h1>
-        <p className="product-list-count">
-          {Object.keys(filters).length > 0 && (
-            <span className="badge badge-primary">
-              🔍 Фильтров: {Object.keys(filters).length}
-            </span>
-          )}
-          {' '}Найдено: {products.length}
-        </p>
+        <div>
+          <h1 className="product-list-title">Каталог</h1>
+          <p className="product-list-count">
+            {filters.search && (
+              <span className="badge badge-primary">🔍 "{filters.search}"</span>
+            )}
+            {' '}Найдено: {products.length}
+          </p>
+        </div>
       </div>
       
       <ProductFilter onFilterChange={handleFilterChange} />
@@ -63,8 +63,12 @@ const ProductList = () => {
         </div>
       ) : (
         <div className="product-list-grid">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, index) => (
+            <ProductCard 
+              key={product.id} 
+              product={product}
+              style={{ animationDelay: `${index * 0.05}s` }}
+            />
           ))}
         </div>
       )}

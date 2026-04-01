@@ -32,7 +32,7 @@
   letter-spacing: 0.05em !important;
 }
 
-/* INPUT - принудительные стили */
+/* INPUT - стилизация */
 .product-filter-input {
   padding: 0.875rem 1rem !important;
   border: 1px solid var(--border-color) !important;
@@ -56,30 +56,21 @@
   background: var(--space-hover) !important;
 }
 
-/* SELECT - ПОЛНОЕ ПЕРЕОПРЕДЕЛЕНИЕ */
+/* SELECT - кастомный */
 .product-filter-select {
   padding: 0.875rem 2.5rem 0.875rem 1rem !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-md) !important;
   font-size: 0.95rem !important;
-  background: var(--space-light) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center !important;
+  background: var(--space-light) url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center !important;
   background-size: 16px !important;
   color: var(--text-primary) !important;
   transition: all 0.2s ease !important;
   cursor: pointer !important;
   width: 100% !important;
-  
-  /* Убираем стандартные стили браузера */
   appearance: none !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
-  -ms-appearance: none !important;
-  -o-appearance: none !important;
-  
-  /* Убираем стандартную стрелку */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
-  background-position: right 12px center !important;
-  background-repeat: no-repeat !important;
 }
 
 .product-filter-select:hover {
@@ -94,11 +85,49 @@
   background-color: var(--space-hover) !important;
 }
 
-/* Опции select */
 .product-filter-select option {
   background: var(--space-medium) !important;
   color: var(--text-primary) !important;
   padding: 12px !important;
+}
+
+/* 🔍 ПОИСК С КНОПКОЙ */
+.product-filter-search-wrapper {
+  display: flex !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+}
+
+.product-filter-search-wrapper .product-filter-input {
+  flex: 1 !important;
+  border-top-right-radius: var(--radius-md) !important;
+  border-bottom-right-radius: var(--radius-md) !important;
+}
+
+.product-filter-search-btn {
+  padding: 0.875rem 1.25rem !important;
+  background: var(--gradient-cosmic) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  font-size: 1.1rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: var(--glow-sm) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 48px !important;
+}
+
+.product-filter-search-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--glow-md) !important;
+  filter: brightness(1.1) !important;
+}
+
+.product-filter-search-btn:active {
+  transform: translateY(0) !important;
 }
 
 /* Кнопка сброса */
@@ -129,6 +158,18 @@
 @media (max-width: 640px) {
   .product-filter-grid {
     grid-template-columns: 1fr !important;
+  }
+  
+  .product-filter-search-wrapper {
+    flex-direction: column !important;
+  }
+  
+  .product-filter-search-wrapper .product-filter-input {
+    border-radius: var(--radius-md) !important;
+  }
+  
+  .product-filter-search-btn {
+    width: 100% !important;
   }
   
   .product-filter {

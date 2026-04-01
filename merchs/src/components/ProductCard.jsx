@@ -13,8 +13,8 @@ const ProductCard = ({ product }) => {
           <div className="product-card-no-image">📷</div>
         )}
         <div className="product-card-overlay"></div>
-        <span className={`product-card-badge ${isSecondHand ? 'product-card-badge-second' : 'product-card-badge-official'}`}>
-          {isSecondHand ? 'Секонд' : 'Мерч'}
+        <span className="product-card-badge">
+          {isSecondHand ? '♻️ Секонд' : '🎤 Мерч'}
         </span>
         {isSecondHand && product.condition && (
           <span className="product-card-condition">
@@ -22,15 +22,14 @@ const ProductCard = ({ product }) => {
           </span>
         )}
         <div className="product-card-actions">
-          <button className="product-card-action-btn">❤️</button>
-          <button className="product-card-action-btn">🔗</button>
+          <button className="product-card-action-btn" title="В избранное">❤️</button>
+          <button className="product-card-action-btn" title="Поделиться">🔗</button>
         </div>
       </div>
       
       <div className="product-card-info">
         <h3 className="product-card-name">{product.name}</h3>
         {product.creator && <p className="product-card-creator">🎤 {product.creator.name}</p>}
-        {isSecondHand && product.owner && <p className="product-card-owner">👤 {product.owner}</p>}
         <div className="product-card-price-row">
           <span className="product-card-price">{product.price} ₽</span>
           {product.is_negotiable && <span className="product-card-negotiable">💰 Торг</span>}

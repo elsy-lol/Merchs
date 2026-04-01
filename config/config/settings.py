@@ -90,8 +90,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'merchmarket_db',           # Имя базы данных
+        'USER': 'postgres',         # Имя пользователя
+        'PASSWORD': 'Mars2020',  # Твой пароль
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'connect_timeout': 10,
+        },
     }
 }
 

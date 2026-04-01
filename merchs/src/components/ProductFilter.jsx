@@ -5,6 +5,10 @@ import './ProductFilter.css';
 const ProductFilter = ({ onFilterChange }) => {
   const [categories, setCategories] = useState([]);
   const [creators, setCreators] = useState([]);
+  
+  // ✅ Отдельное состояние для поиска (локальное, пока не нажата кнопка)
+  const [searchInput, setSearchInput] = useState('');
+  
   const [filters, setFilters] = useState({ 
     product_type: '', 
     category: '', 
@@ -14,7 +18,6 @@ const ProductFilter = ({ onFilterChange }) => {
   });
 
   useEffect(() => {
-    // ✅ Получаем категории с обработкой пагинации
     shopAPI.getCategories()
       .then(res => {
         const data = res.data.results || res.data;
@@ -25,7 +28,6 @@ const ProductFilter = ({ onFilterChange }) => {
         setCategories([]);
       });
 
-    // ✅ Получаем блогеров с обработкой пагинации
     shopAPI.getCreators()
       .then(res => {
         const data = res.data.results || res.data;
@@ -37,6 +39,25 @@ const ProductFilter = ({ onFilterChange }) => {
       });
   }, []);
 
+  // ✅ Обработчик для поиска — только обновляет локальное состояние
+  const handleSearchInput = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  // ✅ Кнопка поиска — отправляет фильтр
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    
+    const newFilters = { ...filters, search: searchInput };
+    setFilters(newFilters);
+    
+    const cleaned = Object.fromEntries(
+      Object.entries(newFilters).filter(([_, v]) => v !== '')
+    );
+    onFilterChange(cleaned);
+  };
+
+  // ✅ Обработчик для остальных фильтров (мгновенное применение)
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFilters = { ...filters, [name]: value };
@@ -48,6 +69,7 @@ const ProductFilter = ({ onFilterChange }) => {
     onFilterChange(cleaned);
   };
 
+  // ✅ Сброс всех фильтров
   const handleClear = () => {
     const emptyFilters = { 
       product_type: '', 
@@ -56,23 +78,42 @@ const ProductFilter = ({ onFilterChange }) => {
       search: '', 
       ordering: '' 
     };
+    setSearchInput('');
     setFilters(emptyFilters);
     onFilterChange({});
+  };
+
+  // ✅ Обработка нажатия Enter в поле поиска
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit(e);
+    }
   };
 
   return (
     <div className="product-filter">
       <div className="product-filter-grid">
-        <div className="product-filter-group">
+        {/* 🔍 Поиск с кнопкой */}
+        <div className="product-filter-group product-filter-search">
           <label className="product-filter-label">🔍 Поиск</label>
-          <input 
-            type="text" 
-            name="search" 
-            placeholder="Название товара..." 
-            value={filters.search} 
-            onChange={handleChange} 
-            className="product-filter-input" 
-          />
+          <div className="product-filter-search-wrapper">
+            <input 
+              type="text" 
+              placeholder="Название товара..." 
+              value={searchInput} 
+              onChange={handleSearchInput}
+              onKeyDown={handleSearchKeyDown}
+              className="product-filter-input" 
+            />
+            <button 
+              type="button" 
+              onClick={handleSearchSubmit}
+              className="product-filter-search-btn"
+              title="Найти"
+            >
+              🔍
+            </button>
+          </div>
         </div>
         
         <div className="product-filter-group">
