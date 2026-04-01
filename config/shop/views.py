@@ -8,23 +8,23 @@ from .serializers import (
 )
 from common.permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
 
-class CreatorViewSet(viewsets.ModelViewSet):
-    queryset = Creator.objects.all()
-    serializer_class = CreatorSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
-    ordering_fields = ['name', 'id']  # ✅ Исправление предупреждения
-    ordering = ['name']  # ✅ Сортировка по умолчанию
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
-    ordering_fields = ['name', 'id']  # ✅ Исправление предупреждения
-    ordering = ['name']  # ✅ Сортировка по умолчанию
+    ordering_fields = ['name', 'id']  # ✅ Добавь
+    ordering = ['name']  # ✅ Добавь
+
+class CreatorViewSet(viewsets.ModelViewSet):
+    queryset = Creator.objects.all()
+    serializer_class = CreatorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+    ordering_fields = ['name', 'id']  # ✅ Добавь
+    ordering = ['name']  # ✅ Добавь
 
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

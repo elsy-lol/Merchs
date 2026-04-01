@@ -9,25 +9,30 @@ import './Profile.css';
 const Profile = () => {
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState(null);
-  const [orders, setOrders] = useState([]);
-  const [listings, setListings] = useState([]);
+  const [orders, setOrders] = useState([]);  // ✅ По умолчанию массив
+  const [listings, setListings] = useState([]);  // ✅ По умолчанию массив
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [profileRes, ordersRes, listingsRes] = await Promise.all([
-          authAPI.getProfile().catch(() => ({ data: null })),
-          ordersAPI.getOrders().catch(() => ({ data: [] })),
-          userAPI.getListings().catch(() => ({ data: [] }))
-        ]);
-
-        if (profileRes.data) {
+        // Загружаем профиль
+        const profileRes = await authAPI.getProfile().catch(() => ({ data: null }));
+        if (profileRes?.data) {
           setProfile(profileRes.data);
         }
-        setOrders(ordersRes.data || []);
-        setListings(listingsRes.data || []);
+
+        // Загружаем заказы с обработкой пагинации
+        const ordersRes = await ordersAPI.getOrders().catch(() => ({ data: { results: [] } }));
+        const ordersData = ordersRes?.data?.results || ordersRes?.data || [];
+        setOrders(Array.isArray(ordersData) ? ordersData : []);  // ✅ Гарантия массива
+
+        // Загружаем товары с обработкой пагинации
+        const listingsRes = await userAPI.getListings().catch(() => ({ data: { results: [] } }));
+        const listingsData = listingsRes?.data?.results || listingsRes?.data || [];
+        setListings(Array.isArray(listingsData) ? listingsData : []);  // ✅ Гарантия массива
+
       } catch (err) {
         console.error('Ошибка загрузки профиля:', err);
         setError('Не удалось загрузить профиль');
@@ -94,7 +99,7 @@ const Profile = () => {
             <p className="profile-empty">Пока нет заказов</p>
           ) : (
             <ul className="profile-section-list">
-              {orders.slice(0, 5).map(order => (
+              {orders.slice(0, 5).map(order => (  // ✅ Теперь slice работает!
                 <li key={order.id} className="profile-section-item">
                   <span className="profile-section-item-name">Заказ #{order.id}</span>
                   <span className={`badge ${order.status === 'delivered' ? 'badge-success' : 'badge-warning'}`}>
@@ -114,7 +119,7 @@ const Profile = () => {
               <p className="profile-empty">Пока нет товаров</p>
             ) : (
               <ul className="profile-section-list">
-                {listings.slice(0, 5).map(item => (
+                {listings.slice(0, 5).map(item => (  // ✅ Теперь slice работает!
                   <li key={item.id} className="profile-section-item">
                     <span className="profile-section-item-name">{item.name}</span>
                     <span className="profile-section-item-price">{item.price} ₽</span>

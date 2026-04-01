@@ -1,85 +1,56 @@
-from rest_framework import viewsets, permissions, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
-from .models import Creator, Category, Product, ProductVariant, ProductImage
-from .serializers import (
-    CreatorSerializer, CategorySerializer, ProductSerializer, 
-    ProductCreateUpdateSerializer, ProductVariantSerializer, ProductImageSerializer
-)
-from common.permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer, UserRegistrationSerializer, ProfileSerializer
 
-class CreatorViewSet(viewsets.ModelViewSet):
-    queryset = Creator.objects.all()
-    serializer_class = CreatorSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
-    ordering_fields = ['name', 'id']  # ✅ Исправление предупреждения
-    ordering = ['name']  # ✅ Сортировка по умолчанию
+# ✅ ИМПОРТЫ ИЗ ПРАВИЛЬНЫХ ПРИЛОЖЕНИЙ!
+from shop.models import Product
+from shop.serializers import ProductSerializer
+from orders.models import Order
+from orders.serializers import OrderSerializer
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
-    ordering_fields = ['name', 'id']  # ✅ Исправление предупреждения
-    ordering = ['name']  # ✅ Сортировка по умолчанию
+User = get_user_model()
 
-class ProductViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'creator', 'product_type', 'status']
-    search_fields = ['name', 'description']
-    ordering_fields = ['price', 'created_at', 'updated_at', 'views']
-    ordering = ['-created_at']  # ✅ Сначала новые
+class UserViewSet(viewsets.ModelViewSet):
+    """ViewSet для управления пользователями"""
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return ProductCreateUpdateSerializer
-        return ProductSerializer
+        if self.action == 'create':
+            return UserRegistrationSerializer
+        elif self.action in ['update', 'partial_update', 'me']:
+            return ProfileSerializer
+        return UserSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        
-        # Если пользователь не авторизован - показываем только опубликованные
-        if not user.is_authenticated:
-            return Product.objects.filter(status='published')
-        
-        # Если пользователь админ - показываем всё
-        if user.is_staff:
-            return Product.objects.all()
-        
-        # Если пользователь авторизован - показываем опубликованные + его товары
-        return Product.objects.filter(Q(status='published') | Q(owner=user))
+    def get_permissions(self):
+        if self.action in ['create', 'register']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
-    def perform_create(self, serializer):
-        is_official = serializer.validated_data.get('product_type') == 'official'
-        if is_official and not self.request.user.is_staff:
-            raise permissions.PermissionDenied("Только администрация может добавлять официальный мерч.")
-        if is_official:
-            serializer.save(status='published')
-        else:
-            serializer.save(owner=self.request.user, status='pending')
+    @action(detail=False, methods=['get', 'put', 'patch'], url_path='profile')
+    def me(self, request):
+        """Получить/обновить текущий профиль пользователя"""
+        if request.method == 'GET':
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data)
+        elif request.method in ['PUT', 'PATCH']:
+            serializer = ProfileSerializer(request.user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
 
-class ProductVariantViewSet(viewsets.ModelViewSet):
-    queryset = ProductVariant.objects.all()
-    serializer_class = ProductVariantSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    @action(detail=False, methods=['get'], url_path='my_listings')
+    def my_listings(self, request):
+        """Получить мои товары (для продавцов)"""
+        listings = Product.objects.filter(owner=request.user)
+        serializer = ProductSerializer(listings, many=True, context={'request': request})
+        return Response(serializer.data)
 
-    def perform_create(self, serializer):
-        product = serializer.validated_data.get('product')
-        if product.owner and product.owner != self.request.user and not self.request.user.is_staff:
-            raise permissions.PermissionDenied("Нельзя добавлять варианты к чужому товару.")
-        serializer.save()
-
-class ProductImageViewSet(viewsets.ModelViewSet):
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    def perform_create(self, serializer):
-        product = serializer.validated_data.get('product')
-        if product.owner and product.owner != self.request.user and not self.request.user.is_staff:
-            raise permissions.PermissionDenied("Нельзя добавлять фото к чужому товару.")
-        serializer.save()
+    @action(detail=False, methods=['get'], url_path='my_orders')
+    def my_orders(self, request):
+        """Получить мои заказы"""
+        orders = Order.objects.filter(buyer=request.user)
+        serializer = OrderSerializer(orders, many=True, context={'request': request})
+        return Response(serializer.data)

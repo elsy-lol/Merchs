@@ -3,13 +3,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 
-# ✅ Получаем кастомную модель пользователя
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для отображения данных пользователя"""
     class Meta:
-        model = User  # ✅ Используем кастомную модель
+        model = User
         fields = [
             'id',
             'username',
@@ -25,7 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'seller_rating', 'balance']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    """Сериализатор для регистрации пользователя"""
     password = serializers.CharField(
         write_only=True, 
         required=True, 
@@ -43,7 +40,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = User  # ✅ Используем кастомную модель
+        model = User
         fields = [
             'username',
             'email',
@@ -72,9 +69,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
-    """Сериализатор для профиля пользователя"""
     class Meta:
-        model = User  # ✅ Используем кастомную модель
+        model = User
         fields = [
             'id',
             'username',
@@ -88,11 +84,3 @@ class ProfileSerializer(serializers.ModelSerializer):
             'balance',
         ]
         read_only_fields = ['id', 'seller_rating', 'balance']
-
-    def update(self, instance, validated_data):
-        allowed_fields = ['first_name', 'last_name', 'bio', 'email']
-        for field in allowed_fields:
-            if field in validated_data:
-                setattr(instance, field, validated_data[field])
-        instance.save()
-        return instance

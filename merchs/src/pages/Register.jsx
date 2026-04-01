@@ -49,15 +49,13 @@ const Register = () => {
         </div>
         {error && <div className="auth-error">⚠️ {error}</div>}
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-form-grid">
-            <div className="auth-form-group">
-              <label className="auth-label">Имя</label>
-              <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} className="auth-input" />
-            </div>
-            <div className="auth-form-group">
-              <label className="auth-label">Фамилия</label>
-              <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} className="auth-input" />
-            </div>
+          <div className="auth-form-group">
+            <label className="auth-label">Имя</label>
+            <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} className="auth-input" />
+          </div>
+          <div className="auth-form-group">
+            <label className="auth-label">Фамилия</label>
+            <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} className="auth-input" />
           </div>
           <div className="auth-form-group">
             <label className="auth-label">Имя пользователя</label>

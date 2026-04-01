@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import About from './pages/About';
 import Register from './pages/Register';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
@@ -22,6 +23,7 @@ function App() {
           <main className="app-main">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/shop" element={<ProductList />} />
