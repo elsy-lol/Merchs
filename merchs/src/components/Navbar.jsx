@@ -47,6 +47,7 @@ const Navbar = () => {
                 🛒
                 {count > 0 && <span className="navbar-cart-count">{count}</span>}
               </Link>
+              <Link to="/wishlist" className="navbar-link">❤️ Избранное</Link>  {/* ✅ Добавь это */}
               <Link to="/profile" className="navbar-link">Профиль</Link>
               {user?.role === 'seller' || user?.role === 'both' ? (
                 <Link to="/seller" className="navbar-link">Продавцу</Link>

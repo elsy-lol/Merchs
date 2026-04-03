@@ -1,10 +1,11 @@
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
-from .models import Creator, Category, Product, ProductVariant, ProductImage
-from .serializers import (
+from .models import Creator, Category, Product, ProductVariant, ProductImage, Wishlist  # ✅ Модели
+from .serializers import (  # ✅ Сериализаторы отдельно
     CreatorSerializer, CategorySerializer, ProductSerializer, 
-    ProductCreateUpdateSerializer, ProductVariantSerializer, ProductImageSerializer
+    ProductCreateUpdateSerializer, ProductVariantSerializer, 
+    ProductImageSerializer, WishlistSerializer
 )
 from common.permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
 
@@ -83,3 +84,52 @@ class ProductImageViewSet(viewsets.ModelViewSet):
         if product.owner and product.owner != self.request.user and not self.request.user.is_staff:
             raise permissions.PermissionDenied("Нельзя добавлять фото к чужому товару.")
         serializer.save()
+
+from .models import Wishlist
+
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from .models import Wishlist
+from .serializers import WishlistSerializer
+
+class WishlistViewSet(viewsets.ModelViewSet):
+    """Избранное пользователя"""
+    serializer_class = WishlistSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """✅ Возвращаем избранное текущего пользователя"""
+        user = self.request.user
+        queryset = Wishlist.objects.filter(user=user).select_related(
+            'product', 
+            'product__creator', 
+            'product__category'
+        ).order_by('-added_at')
+        
+        # Фильтрация по product_id
+        product_id = self.request.query_params.get('product_id', None)
+        if product_id:
+            queryset = queryset.filter(product_id=product_id)
+        
+        return queryset
+    
+    def get_serializer_context(self):
+        """✅ Передаём request в сериализатор"""
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
+    def create(self, request, *args, **kwargs):
+        """✅ Обработка создания с правильным ответом"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        
+        # ✅ Возвращаем 200 OK вместо 201
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, *args, **kwargs):
+        """✅ Удаление с правильным статусом"""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

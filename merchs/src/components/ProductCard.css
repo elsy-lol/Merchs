@@ -200,3 +200,46 @@
     transform: translateX(0);
   }
 }
+/* Кнопка избранного */
+.product-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 55px;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.product-card:hover .product-card-favorite {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.product-card-favorite:hover {
+  background: var(--accent-danger);
+  border-color: var(--accent-danger);
+  transform: scale(1.1);
+}
+
+.product-card-favorite.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 640px) {
+  .product-card-favorite {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

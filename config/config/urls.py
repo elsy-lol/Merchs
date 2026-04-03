@@ -7,11 +7,12 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+    path('custom-admin/', include('admin_custom.urls')),
     # ✅ API Apps - только имя приложения, без config!
     path('api/users/', include('users.urls')),  # Должно быть ДО shop/orders
     path('api/shop/', include('shop.urls')),
     path('api/orders/', include('orders.urls')),
+    
     path('api/cart/', include('cart.urls')),
     path('api/payments/', include('payments.urls')),
     path('api/reviews/', include('reviews.urls')),

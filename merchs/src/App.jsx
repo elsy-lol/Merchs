@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
+import Wishlist from './pages/Wishlist';  // ✅ Добавь импорт
 import Login from './pages/Login';
 import About from './pages/About';
 import Register from './pages/Register';
@@ -28,6 +29,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/shop" element={<ProductList />} />
               <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} /> 
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -1,0 +1,113 @@
+{% extends 'admin_custom/base.html' %}
+
+{% block title %}Заказ #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1 class="admin-title">📦 Заказ #{{ order.id }}</h1>
+    <a href="{% url 'custom-admin-orders' %}" class="btn btn-secondary">← Назад</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Информация о заказе -->
+    <div class="admin-form">
+        <h3>📋 Информация</h3>
+        <div class="form-group">
+            <label class="form-label">Покупатель</label>
+            <div class="form-input">{{ order.buyer.username }} ({{ order.buyer.email }})</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Статус</label>
+            <div class="form-input">
+                {% if order.status == 'pending' %}
+                <span class="badge badge-warning">Ожидает</span>
+                {% elif order.status == 'paid' %}
+                <span class="badge badge-success">Оплачен</span>
+                {% else %}
+                <span class="badge">{{ order.status }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Адрес доставки</label>
+            <div class="form-input">{{ order.shipping_address }}</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Телефон</label>
+            <div class="form-input">{{ order.phone }}</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="form-input">{{ order.email }}</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Дата заказа</label>
+            <div class="form-input">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+        </div>
+    </div>
+    
+    <!-- Товары -->
+    <div class="admin-form">
+        <h3>📦 Товары</h3>
+        <table class="admin-table" style="margin-top: 1rem;">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Кол-во</th>
+                    <th>Цена</th>
+                    <th>Итого</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }} ₽</td>
+                    <td>{{ item.get_total }} ₽</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" style="text-align: right; font-weight: 700;">Итого:</td>
+                    <td style="font-weight: 700; color: var(--accent-primary);">{{ order.total_price }} ₽</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Платежи -->
+{% if payments %}
+<div class="admin-form" style="margin-top: 2rem;">
+    <h3>💳 Платежи</h3>
+    <table class="admin-table" style="margin-top: 1rem;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Метод</th>
+                <th>Дата оплаты</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.id|truncatechars:8 }}</td>
+                <td>{{ payment.amount }} ₽</td>
+                <td>
+                    {% if payment.status == 'completed' %}
+                    <span class="badge badge-success">Оплачен</span>
+                    {% else %}
+                    <span class="badge badge-warning">{{ payment.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ payment.get_payment_method_display }}</td>
+                <td>{{ payment.paid_at|date:"d.m.Y H:i"|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

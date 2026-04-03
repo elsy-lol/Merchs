@@ -1,0 +1,92 @@
+{% extends 'admin_custom/base.html' %}
+
+{% block title %}{{ product|yesno:"Редактировать,Добавить" }} товар{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1 class="admin-title">👕 {{ product|yesno:"Редактировать,Добавить" }} товар</h1>
+    <a href="{% url 'custom-admin-products' %}" class="btn btn-secondary">← Назад</a>
+</div>
+
+<form method="post" class="admin-form">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label class="form-label">Название *</label>
+        <input type="text" name="name" class="form-input" value="{{ product.name|default:'' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Описание</label>
+        <textarea name="description" class="form-textarea">{{ product.description|default:'' }}</textarea>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+            <label class="form-label">Цена (₽) *</label>
+            <input type="number" name="price" class="form-input" value="{{ product.price|default:'0' }}" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Тип товара *</label>
+            <select name="product_type" class="form-select">
+                <option value="official" {% if product.product_type == 'official' %}selected{% endif %}>🎤 Официальный</option>
+                <option value="second_hand" {% if product.product_type == 'second_hand' %}selected{% endif %}>♻️ Секонд-хенд</option>
+            </select>
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+            <label class="form-label">Исполнитель *</label>
+            <select name="creator" class="form-select" required>
+                {% for creator in creators %}
+                <option value="{{ creator.id }}" {% if product.creator_id == creator.id %}selected{% endif %}>{{ creator.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Категория *</label>
+            <select name="category" class="form-select" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if product.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Статус *</label>
+        <select name="status" class="form-select">
+            <option value="published" {% if product.status == 'published' %}selected{% endif %}>✅ Опубликован</option>
+            <option value="pending" {% if product.status == 'pending' %}selected{% endif %}>⏳ На модерации</option>
+            <option value="draft" {% if product.status == 'draft' %}selected{% endif %}>📝 Черновик</option>
+        </select>
+    </div>
+    
+    {% if not product %}
+    <div class="form-group">
+        <label class="form-label">Размеры (выберите несколько)</label>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            {% for size in 'XSSMLXLXXL'|make_list %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--bg-primary); border-radius: var(--radius-md); cursor: pointer;">
+                <input type="checkbox" name="sizes" value="{{ size }}" checked>
+                {{ size }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Запас на каждый размер</label>
+        <input type="number" name="stock" class="form-input" value="10" min="0">
+    </div>
+    {% endif %}
+    
+    <div style="display: flex; gap: 1rem;">
+        <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+        <a href="{% url 'custom-admin-products' %}" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

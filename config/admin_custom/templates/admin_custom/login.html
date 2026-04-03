@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в админку | MerchMarket</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a2e;
+            --bg-elevated: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #ff006e;
+            --accent-danger: #ff3d00;
+            --border-color: #333333;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-logo {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .login-title {
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            background: rgba(255, 61, 0, 0.1);
+            border: 2px solid var(--accent-danger);
+            color: var(--accent-danger);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .login-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .login-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .login-links a:hover {
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">🎨</div>
+        <h1 class="login-title">Админка</h1>
+        <p class="login-subtitle">MerchMarket Admin</p>
+        
+        {% if error %}
+        <div class="error-message">⚠️ {{ error }}</div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Имя пользователя</label>
+                <input type="text" name="username" class="form-input" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <input type="password" name="password" class="form-input" required>
+            </div>
+            
+            <button type="submit" class="login-btn">🔐 Войти</button>
+        </form>
+        
+        <div class="login-links">
+            <a href="/admin/">→ Стандартная админка Django</a><br>
+            <a href="/">→ На сайт</a>
+        </div>
+    </div>
+</body>
+</html>

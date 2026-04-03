@@ -1,0 +1,125 @@
+{% extends 'admin_custom/base.html' %}
+
+{% block title %}Дашборд{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1 class="admin-title">📊 Дашборд</h1>
+    <div class="admin-user">
+        <span class="admin-user-name">👤 {{ request.user.username }}</span>
+        <a href="{% url 'custom-admin-products' %}" class="btn btn-primary">+ Товар</a>
+        <a href="{% url 'custom-admin-creators' %}" class="btn btn-primary">+ Исполнитель</a>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-icon">👕</div>
+        <div class="stat-card-value">{{ total_products }}</div>
+        <div class="stat-card-label">Товаров</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">📦</div>
+        <div class="stat-card-value">{{ total_orders }}</div>
+        <div class="stat-card-label">Заказов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">👥</div>
+        <div class="stat-card-value">{{ total_users }}</div>
+        <div class="stat-card-label">Пользователей</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">🎤</div>
+        <div class="stat-card-value">{{ total_creators }}</div>
+        <div class="stat-card-label">Исполнителей</div>
+    </div>
+</div>
+
+<!-- Доход -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-icon">💰</div>
+        <div class="stat-card-value">{{ revenue_today|floatformat:0 }} ₽</div>
+        <div class="stat-card-label">За сегодня</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">📅</div>
+        <div class="stat-card-value">{{ revenue_week|floatformat:0 }} ₽</div>
+        <div class="stat-card-label">За неделю</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">📆</div>
+        <div class="stat-card-value">{{ revenue_month|floatformat:0 }} ₽</div>
+        <div class="stat-card-label">За месяц</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">⚠️</div>
+        <div class="stat-card-value">{{ low_stock }}</div>
+        <div class="stat-card-label">Мало на складе</div>
+    </div>
+</div>
+
+<!-- Заказы по статусам -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-icon">⏳</div>
+        <div class="stat-card-value">{{ orders_pending }}</div>
+        <div class="stat-card-label">Ожидают оплаты</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">✅</div>
+        <div class="stat-card-value">{{ orders_paid }}</div>
+        <div class="stat-card-label">Оплачены</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon">🚚</div>
+        <div class="stat-card-value">{{ orders_delivered }}</div>
+        <div class="stat-card-label">Доставлены</div>
+    </div>
+</div>
+
+<!-- Последние заказы -->
+<div class="admin-table" style="margin-top: 2rem;">
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Покупатель</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in recent_orders %}
+            <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.buyer.username }}</td>
+                <td>{{ order.total_price }} ₽</td>
+                <td>
+                    {% if order.status == 'pending' %}
+                    <span class="badge badge-warning">Ожидает</span>
+                    {% elif order.status == 'paid' %}
+                    <span class="badge badge-success">Оплачен</span>
+                    {% elif order.status == 'delivered' %}
+                    <span class="badge badge-info">Доставлен</span>
+                    {% else %}
+                    <span class="badge">{{ order.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'custom-admin-order-detail' order.pk %}" class="btn btn-secondary">👁️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">Заказов пока нет</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

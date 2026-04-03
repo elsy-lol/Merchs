@@ -136,3 +136,70 @@
   background: var(--border-color);
   border-radius: 3px;
 }
+/* Кнопка избранного */
+.product-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 55px;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.product-card:hover .product-card-favorite {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.product-card-favorite:hover {
+  background: var(--accent-danger);
+  border-color: var(--accent-danger);
+  color: var(--text-inverse);
+  transform: scale(1.1);
+}
+
+/* ✅ Активное состояние (в избранном) */
+.product-card-favorite.active {
+  opacity: 1;
+  transform: translateX(0);
+  background: var(--accent-danger);
+  border-color: var(--accent-danger);
+}
+
+/* ✅ Состояние загрузки */
+.product-card-favorite.loading {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.product-card-favorite:disabled {
+  cursor: not-allowed;
+}
+
+/* Анимация сердца */
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.product-card-favorite.active {
+  animation: heartBeat 0.3s ease-in-out;
+}
+
+@media (max-width: 640px) {
+  .product-card-favorite {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

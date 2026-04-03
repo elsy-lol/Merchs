@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Creator, Category, Product, ProductVariant, ProductImage
+from .models import Creator, Category, Product, ProductVariant, ProductImage, Wishlist
 
 class CreatorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,3 +85,35 @@ class ProductCreateUpdateSerializer(serializers.ModelSerializer):
                 ProductImage.objects.create(product=instance, image=image)
                 
         return instance
+    
+class WishlistSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = Wishlist
+        fields = ['id', 'product', 'product_id', 'added_at']
+        read_only_fields = ['id', 'added_at']
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        product_id = validated_data.pop('product_id')
+        
+        # ✅ Проверяем существование товара
+        from .models import Product
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError({'detail': 'Товар не найден'})
+        
+        # ✅ Возвращаем существующую запись вместо ошибки
+        wishlist_item, created = Wishlist.objects.get_or_create(
+            user=user,
+            product=product
+        )
+        
+        if not created:
+            # ✅ Не ошибка, а просто возвращаем существующую
+            pass
+        
+        return wishlist_item

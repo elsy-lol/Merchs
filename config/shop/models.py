@@ -87,3 +87,17 @@ class ProductImage(models.Model):
 
     class Meta:
         ordering = ['order', 'id']
+
+class Wishlist(models.Model):
+    """Избранное пользователя"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wishlist')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlist_items')
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'product')
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+    
+    def __str__(self):
+        return f'{self.user.username} - {self.product.name}'

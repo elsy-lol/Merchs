@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+// src/main.jsx
+
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { CartProvider } from './hooks/useCart.jsx';
 import './index.css';
-
-// ✅ Load theme from localStorage
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <CartProvider>
+        <App />
+      </CartProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

@@ -1,0 +1,42 @@
+{% extends 'admin_custom/base.html' %}
+
+{% block title %}Категории{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1 class="admin-title">📁 Категории</h1>
+    <form method="post" style="display: flex; gap: 0.5rem;">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Название" class="form-input" style="width: 200px;" required>
+        <input type="text" name="slug" placeholder="Slug" class="form-input" style="width: 150px;" required>
+        <button type="submit" class="btn btn-primary">+ Добавить</button>
+    </form>
+</div>
+
+<div class="admin-table">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Slug</th>
+                <th>Товаров</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td><code>{{ category.slug }}</code></td>
+                <td>{{ category.product_count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem;">Категорий нет</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

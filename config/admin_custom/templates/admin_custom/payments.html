@@ -1,0 +1,50 @@
+{% extends 'admin_custom/base.html' %}
+
+{% block title %}Платежи{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1 class="admin-title">💳 Платежи</h1>
+</div>
+
+<div class="admin-table">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Заказ</th>
+                <th>Пользователь</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Метод</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.id|truncatechars:8 }}</td>
+                <td>#{{ payment.order.id }}</td>
+                <td>{{ payment.user.username }}</td>
+                <td>{{ payment.amount }} ₽</td>
+                <td>
+                    {% if payment.status == 'completed' %}
+                    <span class="badge badge-success">Оплачен</span>
+                    {% elif payment.status == 'failed' %}
+                    <span class="badge badge-danger">Не удался</span>
+                    {% else %}
+                    <span class="badge badge-warning">{{ payment.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ payment.get_payment_method_display }}</td>
+                <td>{{ payment.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">Платежей нет</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

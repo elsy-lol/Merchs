@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { shopAPI } from '../api/shop';
 import './ProductFilter.css';
 
-const ProductFilter = ({ onFilterChange }) => {
+const ProductFilter = ({ filters, onFilterChange }) => {
   const [categories, setCategories] = useState([]);
   const [creators, setCreators] = useState([]);
   const [expanded, setExpanded] = useState({
@@ -12,13 +12,26 @@ const ProductFilter = ({ onFilterChange }) => {
     creator: false,
     sort: false,
   });
-  const [filters, setFilters] = useState({ 
-    product_type: '', 
-    category: '', 
-    creator: '', 
-    search: '', 
-    ordering: '' 
+
+  // ✅ Локальное состояние для инпутов (синхронизируется с props)
+  const [localFilters, setLocalFilters] = useState({
+    product_type: '',
+    category: '',
+    creator: '',
+    search: '',
+    ordering: '',
   });
+
+  // ✅ Синхронизация с родительским состоянием
+  useEffect(() => {
+    setLocalFilters({
+      product_type: filters.product_type || '',
+      category: filters.category || '',
+      creator: filters.creator || '',
+      search: filters.search || '',
+      ordering: filters.ordering || '',
+    });
+  }, [filters]);
 
   useEffect(() => {
     shopAPI.getCategories()
@@ -42,24 +55,25 @@ const ProductFilter = ({ onFilterChange }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const newFilters = { ...filters, [name]: value };
-    setFilters(newFilters);
+    const newLocalFilters = { ...localFilters, [name]: value };
+    setLocalFilters(newLocalFilters);
     
+    // ✅ Отправляем родителю только заполненные фильтры
     const cleaned = Object.fromEntries(
-      Object.entries(newFilters).filter(([_, v]) => v !== '')
+      Object.entries(newLocalFilters).filter(([_, v]) => v !== '')
     );
     onFilterChange(cleaned);
   };
 
   const handleClear = () => {
-    const emptyFilters = { 
-      product_type: '', 
-      category: '', 
-      creator: '', 
-      search: '', 
-      ordering: '' 
+    const emptyFilters = {
+      product_type: '',
+      category: '',
+      creator: '',
+      search: '',
+      ordering: '',
     };
-    setFilters(emptyFilters);
+    setLocalFilters(emptyFilters);
     onFilterChange({});
   };
 
@@ -77,7 +91,7 @@ const ProductFilter = ({ onFilterChange }) => {
               type="text" 
               name="search" 
               placeholder="Название товара..." 
-              value={filters.search} 
+              value={localFilters.search} 
               onChange={handleChange} 
               className="filter-input" 
             />
@@ -98,7 +112,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="product_type" 
                 value="" 
-                checked={filters.product_type === ''}
+                checked={localFilters.product_type === ''}
                 onChange={handleChange} 
               />
               <span>Все</span>
@@ -108,7 +122,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="product_type" 
                 value="official" 
-                checked={filters.product_type === 'official'}
+                checked={localFilters.product_type === 'official'}
                 onChange={handleChange} 
               />
               <span>🎤 Официальный мерч</span>
@@ -118,7 +132,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="product_type" 
                 value="second_hand" 
-                checked={filters.product_type === 'second_hand'}
+                checked={localFilters.product_type === 'second_hand'}
                 onChange={handleChange} 
               />
               <span>♻️ Секонд-хенд</span>
@@ -140,7 +154,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="category" 
                 value="" 
-                checked={filters.category === ''}
+                checked={localFilters.category === ''}
                 onChange={handleChange} 
               />
               <span>Все</span>
@@ -151,7 +165,7 @@ const ProductFilter = ({ onFilterChange }) => {
                   type="radio" 
                   name="category" 
                   value={cat.id} 
-                  checked={filters.category === cat.id.toString()}
+                  checked={localFilters.category === cat.id.toString()}
                   onChange={handleChange} 
                 />
                 <span>{cat.name}</span>
@@ -174,7 +188,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="creator" 
                 value="" 
-                checked={filters.creator === ''}
+                checked={localFilters.creator === ''}
                 onChange={handleChange} 
               />
               <span>Все</span>
@@ -185,7 +199,7 @@ const ProductFilter = ({ onFilterChange }) => {
                   type="radio" 
                   name="creator" 
                   value={cr.id} 
-                  checked={filters.creator === cr.id.toString()}
+                  checked={localFilters.creator === cr.id.toString()}
                   onChange={handleChange} 
                 />
                 <span>{cr.name}</span>
@@ -208,7 +222,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="ordering" 
                 value="" 
-                checked={filters.ordering === ''}
+                checked={localFilters.ordering === ''}
                 onChange={handleChange} 
               />
               <span>По умолчанию</span>
@@ -218,7 +232,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="ordering" 
                 value="-created_at" 
-                checked={filters.ordering === '-created_at'}
+                checked={localFilters.ordering === '-created_at'}
                 onChange={handleChange} 
               />
               <span>🆕 Сначала новые</span>
@@ -228,7 +242,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="ordering" 
                 value="price" 
-                checked={filters.ordering === 'price'}
+                checked={localFilters.ordering === 'price'}
                 onChange={handleChange} 
               />
               <span>💰 Цена: по возрастанию</span>
@@ -238,7 +252,7 @@ const ProductFilter = ({ onFilterChange }) => {
                 type="radio" 
                 name="ordering" 
                 value="-price" 
-                checked={filters.ordering === '-price'}
+                checked={localFilters.ordering === '-price'}
                 onChange={handleChange} 
               />
               <span>💰 Цена: по убыванию</span>

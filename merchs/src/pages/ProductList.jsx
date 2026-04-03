@@ -28,7 +28,7 @@ const ProductList = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    setMobileFiltersOpen(false); // Закрыть на мобильном после применения
+    setMobileFiltersOpen(false);
   };
 
   if (loading) {
@@ -43,7 +43,6 @@ const ProductList = () => {
 
   return (
     <div className="product-list-page">
-      {/* Кнопка фильтров для мобильных */}
       <button 
         className="mobile-filters-toggle"
         onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
@@ -52,7 +51,6 @@ const ProductList = () => {
       </button>
 
       <div className="product-list-container">
-        {/* Боковая панель фильтров */}
         <aside className={`filters-sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
           <div className="filters-sidebar-header">
             <h2 className="filters-sidebar-title">Фильтры</h2>
@@ -63,10 +61,13 @@ const ProductList = () => {
               ✕
             </button>
           </div>
-          <ProductFilter onFilterChange={handleFilterChange} />
+          {/* ✅ Передаём filters в компонент */}
+          <ProductFilter 
+            filters={filters} 
+            onFilterChange={handleFilterChange} 
+          />
         </aside>
 
-        {/* Основной контент */}
         <main className="product-list-content">
           <div className="product-list-header">
             <h1 className="product-list-title">Каталог</h1>
