@@ -1,79 +1,114 @@
-import { Link, useNavigate } from 'react-router-dom';
+// src/components/Navbar.jsx
+
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../hooks/useCart';
-import { useEffect, useState } from 'react';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { count } = useCart();
+  const { isAuthenticated, user, logout } = useAuth();
+  const { itemCount } = useCart();
   const navigate = useNavigate();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleLogout = async () => {
-    await logout();
+  const handleLogout = () => {
+    logout();
+    setMobileMenuOpen(false);
     navigate('/');
   };
 
-  const handleThemeToggle = () => {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="navbar-content">
-        <Link to="/" className="navbar-logo">MerchMarket</Link>
-        
-        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          <Link to="/shop" className="navbar-link">Каталог</Link>
-          <Link to="/about" className="navbar-link">О нас</Link>
-          
-          {isAuthenticated ? (
-            <>
-              <Link to="/cart" className="navbar-cart">
-                🛒
-                {count > 0 && <span className="navbar-cart-count">{count}</span>}
-              </Link>
-              <Link to="/wishlist" className="navbar-link">❤️ Избранное</Link>  {/* ✅ Добавь это */}
-              <Link to="/profile" className="navbar-link">Профиль</Link>
-              {user?.role === 'seller' || user?.role === 'both' ? (
-                <Link to="/seller" className="navbar-link">Продавцу</Link>
-              ) : null}
-              <button onClick={handleLogout} className="btn btn-sm btn-outline">Выйти</button>
-            </>
-          ) : (
-            <div className="navbar-actions">
-              <button onClick={handleThemeToggle} className="theme-toggle" title="Сменить тему">
-                🌓
-              </button>
-              <Link to="/login" className="navbar-btn navbar-btn-login">Вход</Link>
-              <Link to="/register" className="navbar-btn navbar-btn-register">Регистрация</Link>
-            </div>
-          )}
-        </div>
+    <nav className="navbar">
+      <div className="navbar-container">
+        {/* Logo */}
+        <Link to="/" className="navbar-logo" onClick={() => setMobileMenuOpen(false)}>
+          🎨 MerchMarket
+        </Link>
 
+        {/* Mobile toggle */}
         <button 
-          className="navbar-toggle" 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className={`navbar-toggle ${mobileMenuOpen ? 'active' : ''}`}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Меню"
         >
           <span></span>
           <span></span>
           <span></span>
         </button>
+
+        {/* Menu */}
+        <div className={`navbar-menu ${mobileMenuOpen ? 'active' : ''}`}>
+          <Link 
+            to="/shop" 
+            className={`navbar-link ${isActive('/shop') ? 'active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            🛒 Каталог
+          </Link>
+          <Link 
+            to="/about" 
+            className={`navbar-link ${isActive('/about') ? 'active' : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            ℹ️ О нас
+          </Link>
+          
+          {isAuthenticated ? (
+            <>
+              <Link 
+                to="/cart" 
+                className={`navbar-link navbar-cart ${isActive('/cart') ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                🛒 Корзина
+                {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+              </Link>
+              <Link 
+                to="/profile" 
+                className={`navbar-link ${isActive('/profile') ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                👤 {user?.username}
+              </Link>
+              <Link 
+                to="/wishlist" 
+                className={`navbar-link ${isActive('/wishlist') ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                ❤️ Избранное
+              </Link>
+              <button 
+                onClick={handleLogout} 
+                className="navbar-link navbar-logout"
+              >
+                🚪 Выйти
+              </button>
+            </>
+          ) : (
+            <>
+              <Link 
+                to="/login" 
+                className={`navbar-link ${isActive('/login') ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                🔐 Вход
+              </Link>
+              <Link 
+                to="/register" 
+                className="navbar-link navbar-register"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                📝 Регистрация
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

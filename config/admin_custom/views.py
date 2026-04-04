@@ -124,17 +124,19 @@ class DashboardView(AdminRequiredMixin, TemplateView):
 # ИСПОЛНИТЕЛИ (CREATORS)
 # ============================================================================
 
+
 class CreatorsView(AdminRequiredMixin, TemplateView):
     """Список исполнителей"""
     template_name = 'admin_custom/creators.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # ✅ ИСПРАВЛЕНО: products → product
+        # ✅ Creator имеет products (множественное)
         context['creators'] = Creator.objects.annotate(
-            product_count=Count('product')
+            product_count=Count('products')
         ).order_by('-created_at')
         return context
+
 
 
 class CreatorAddView(AdminRequiredMixin, View):
