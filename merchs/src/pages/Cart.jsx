@@ -3,6 +3,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
+import { 
+  ShopIcon, 
+  RecycleIcon, 
+  TrashIcon, 
+  ClearIcon, 
+  CheckoutIcon,
+  BoxIcon,
+  ArrowLeft 
+} from '../components/Icons';
 import './Cart.css';
 
 const Cart = () => {
@@ -10,54 +19,47 @@ const Cart = () => {
   const navigate = useNavigate();
   const [removingKey, setRemovingKey] = useState(null);
 
-  // ✅ Безопасное преобразование цены
   const getPrice = (value) => {
     if (value === null || value === undefined) return 0;
     if (typeof value === 'number') return value;
     return parseFloat(value) || 0;
   };
 
-  // ✅ Уникальный ключ для товара (используется везде одинаково)
   const getItemKey = (item) => {
     const pid = item.product?.id;
     const vid = item.variant?.id;
     return vid ? `p${pid}-v${vid}` : `p${pid}`;
   };
 
-  // Удаление товара
   const handleRemoveItem = (item) => {
     const key = getItemKey(item);
-    console.log('🗑️ Удаляем:', { key, product: item.product?.id, variant: item.variant?.id });
     setRemovingKey(key);
-    removeFromCart(item.product?.id, item.variant?.id);
-    setTimeout(() => setRemovingKey(null), 300);
+    setTimeout(() => {
+      removeFromCart(item.product?.id, item.variant?.id);
+      setRemovingKey(null);
+    }, 300);
   };
 
-  // ✅ Изменение количества — ПРОСТАЯ ВЕРСИЯ
   const handleQuantityChange = (item, newQuantity) => {
-    const productId = item.product?.id;
-    const variantId = item.variant?.id;  // Может быть undefined
-    const key = getItemKey(item);
-    
-    console.log('🔢 Меняем количество:', { key, productId, variantId, newQuantity });
-    
     if (newQuantity < 1) {
       handleRemoveItem(item);
       return;
     }
-    
-    // ✅ Вызываем updateQuantity с теми же параметрами, что и в getItemKey
-    updateQuantity(productId, variantId, newQuantity);
+    updateQuantity(item.product?.id, item.variant?.id, newQuantity);
   };
 
   if (!cart || cart.length === 0) {
     return (
       <div className="cart-page">
-        <div className="cart-empty">
-          <div className="cart-empty-icon">🛒</div>
-          <h1>Корзина пуста</h1>
-          <p>Добавьте товары, чтобы оформить заказ</p>
-          <Link to="/shop" className="btn btn-primary btn-lg">В каталог</Link>
+        <div className="container">
+          <div className="cart-empty-premium animate-fade-in">
+            <div className="empty-icon-wrap">
+              <BoxIcon size={64} />
+            </div>
+            <h1 className="gradient-text">Корзина пуста</h1>
+            <p>Вы пока ничего не добавили в свою коллекцию.</p>
+            <Link to="/shop" className="btn btn-primary btn-lg">Начать покупки</Link>
+          </div>
         </div>
       </div>
     );
@@ -65,20 +67,16 @@ const Cart = () => {
 
   return (
     <div className="cart-page">
-      <div className="cart-container">
-        <h1 className="cart-title">🛒 Корзина</h1>
-        
-        <div className="cart-content">
-          <div className="cart-items">
-            <div className="cart-items-header">
-              <span>Товар</span>
-              <span>Количество</span>
-              <span>Цена</span>
-              <span>Итого</span>
-              <span></span>
-            </div>
-            
-            {cart.map((item, index) => {
+      <div className="container">
+        <h1 className="cart-title mb-12 animate-fade-in">
+          <span className="gradient-text">Корзина</span>
+          <span className="text-muted text-sm ml-4 uppercase tracking-widest">{itemCount} Тов.</span>
+        </h1>
+
+        <div className="cart-container-premium">
+          {/* Left: Items List */}
+          <div className="cart-items-wrap animate-slide-up">
+            {cart.map((item) => {
               const itemKey = getItemKey(item);
               const isRemoving = removingKey === itemKey;
               const productPrice = getPrice(item.product?.price);
@@ -88,73 +86,92 @@ const Cart = () => {
               return (
                 <div 
                   key={itemKey} 
-                  className={`cart-item ${isRemoving ? 'removing' : ''}`}
+                  className={`cart-item-premium ${isRemoving ? 'removing' : ''}`}
                 >
-                  <div className="cart-item-product">
+                  <div className="cart-img-wrap">
                     {item.product?.images?.[0]?.image ? (
-                      <img src={item.product.images[0].image} alt={item.product.name} className="cart-item-image" />
+                      <img src={item.product.images[0].image} alt={item.product.name} />
                     ) : (
-                      <div className="cart-item-no-image">📷</div>
+                      <div className="flex items-center justify-center h-full bg-tertiary text-muted">
+                        <BoxIcon size={40} />
+                      </div>
                     )}
-                    <div className="cart-item-info">
-                      <h3 className="cart-item-name">{item.product?.name}</h3>
-                      {item.variant && <p className="cart-item-variant">Размер: {item.variant.size}</p>}
+                  </div>
+                  
+                  <div className="item-details">
+                    <h3 className="item-name-premium">{item.product?.name}</h3>
+                    <div className="flex gap-2 items-center">
+                      {item.variant && <span className="item-variant-label">Size: {item.variant.size}</span>}
                       {item.product?.product_type === 'second_hand' && (
-                        <span className="cart-item-badge">♻️ Секонд</span>
+                        <span className="badge badge-purple text-xs"><RecycleIcon /> Second Hand</span>
                       )}
                     </div>
+                    {item.product?.creator && (
+                      <span className="text-xs font-bold text-muted uppercase">By {item.product.creator.name}</span>
+                    )}
                   </div>
                   
-                  <div className="cart-item-quantity">
+                  <div className="quantity-control-p">
                     <button 
-                      type="button"  // ✅ Важно: type="button" чтобы не сабмитить форму
-                      className="quantity-btn"
+                      className="q-btn"
                       onClick={() => handleQuantityChange(item, quantity - 1)}
-                      disabled={quantity <= 1}
-                    >
-                      −
-                    </button>
-                    <span className="quantity-value">{quantity}</span>
+                    >−</button>
+                    <span className="font-bold">{quantity}</span>
                     <button 
-                      type="button"
-                      className="quantity-btn"
+                      className="q-btn"
                       onClick={() => handleQuantityChange(item, quantity + 1)}
-                    >
-                      +
-                    </button>
+                    >+</button>
                   </div>
                   
-                  <div className="cart-item-price">{productPrice.toFixed(2)} ₽</div>
-                  <div className="cart-item-total">{itemTotal.toFixed(2)} ₽</div>
+                  <div className="item-total-p">
+                    {itemTotal.toLocaleString()} ₽
+                  </div>
                   
                   <button 
-                    type="button"
-                    className="cart-item-remove"
+                    className="remove-btn-p"
                     onClick={() => handleRemoveItem(item)}
-                    disabled={isRemoving}
+                    title="Удалить"
                   >
-                    {isRemoving ? '⏳' : '🗑️'}
+                    <TrashIcon />
                   </button>
                 </div>
               );
             })}
           </div>
-          
-          <div className="cart-summary">
-            <h2 className="cart-summary-title">📦 Итого</h2>
-            <div className="cart-summary-row">
-              <span>Товаров:</span>
+
+          {/* Right: Summary Card */}
+          <div className="cart-summary-premium animate-slide-right">
+            <h2 className="summary-title">Итого</h2>
+            
+            <div className="summary-row">
+              <span>Количество</span>
               <span>{itemCount} шт.</span>
             </div>
-            <div className="cart-summary-row">
-              <span>Итого:</span>
-              <span className="total-amount">{getPrice(total).toFixed(2)} ₽</span>
+            
+            <div className="summary-row">
+              <span>Доставка</span>
+              <span className="text-success uppercase font-bold">Бесплатно</span>
             </div>
-            <div className="cart-summary-actions">
-              <button onClick={clearCart} className="btn btn-secondary btn-block">🗑️ Очистить</button>
-              <Link to="/checkout" className="btn btn-primary btn-block btn-lg">💳 Оформить</Link>
+
+            <div className="summary-row total">
+              <span>К оплате</span>
+              <span className="total-value-premium">{getPrice(total).toLocaleString()} ₽</span>
             </div>
-            <Link to="/shop" className="cart-continue-shopping">← В каталог</Link>
+
+            <button 
+              onClick={() => navigate('/checkout')}
+              className="checkout-btn-premium"
+            >
+              <CheckoutIcon /> Оформить заказ
+            </button>
+
+            <button onClick={clearCart} className="clear-cart-btn-p flex items-center justify-center gap-2">
+              <ClearIcon /> Очистить корзину
+            </button>
+
+            <Link to="/shop" className="cart-continue-shopping mt-8 block text-center text-muted hover:text-primary transition-colors">
+              <ArrowLeft /> Продолжить покупки
+            </Link>
           </div>
         </div>
       </div>

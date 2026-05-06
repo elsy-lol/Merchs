@@ -30,7 +30,13 @@ class CreatorViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'creator', 'product_type', 'status']
+    filterset_fields = {
+        'category': ['exact'],
+        'creator': ['exact'],
+        'product_type': ['exact'],
+        'status': ['exact'],
+        'price': ['gte', 'lte'],
+    }
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at', 'updated_at', 'views']
     ordering = ['-created_at']  # ✅ Сначала новые

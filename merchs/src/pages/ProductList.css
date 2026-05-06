@@ -136,55 +136,57 @@
 /* Кнопки применения фильтров */
 .filters-actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1.5rem 0;
   margin-top: 1rem;
-  border-top: 2px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
   position: sticky;
   bottom: 0;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
+  z-index: 10;
 }
 
-.filters-actions .btn-reset {
+.btn-reset {
   flex: 1;
-  padding: 0.75rem;
-  background: transparent;
-  border: 2px solid var(--border-color);
+  padding: 0.875rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-weight: 600;
-  cursor: pointer;
+  font-size: 0.9rem;
   transition: all var(--transition-fast);
 }
 
-.filters-actions .btn-reset:hover {
-  border-color: var(--accent-danger);
+.btn-reset:hover {
+  background: var(--bg-tertiary);
   color: var(--accent-danger);
 }
 
-.filters-actions .btn-apply {
+.btn-apply {
   flex: 2;
-  padding: 0.75rem;
+  padding: 0.875rem;
   background: var(--accent-primary);
+  color: #fff;
   border: none;
   border-radius: var(--radius-md);
-  color: var(--text-inverse);
   font-weight: 700;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  font-size: 0.95rem;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 12px rgba(255, 0, 110, 0.2);
 }
 
-.filters-actions .btn-apply:hover:not(:disabled) {
-  opacity: 0.9;
+.btn-apply:hover:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 0, 110, 0.3);
 }
 
-.filters-actions .btn-apply:disabled {
+.btn-apply:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
-  background: var(--bg-tertiary);
+  filter: grayscale(1);
 }
 
 /* ========================================
@@ -438,4 +440,16 @@
     width: 100%;
     text-align: center;
   }
+}
+.btn-back-creators {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.btn-back-creators:hover {
+  color: var(--primary-color);
 }

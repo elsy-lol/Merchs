@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { RegisterIcon, TrashIcon, EyeIcon, EyeOffIcon } from '../components/Icons';
 import './Auth.css';
 
 const initialFormData = {
@@ -251,7 +252,7 @@ const Register = () => {
                 }}
                 tabIndex={-1}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
             <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
@@ -277,7 +278,7 @@ const Register = () => {
 
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button type="submit" disabled={loading} className="auth-btn" style={{ flex: 1 }}>
-              {loading ? '⏳ Регистрация...' : '📝 Зарегистрироваться'}
+              {loading ? '⏳ Регистрация...' : <><RegisterIcon /> Зарегистрироваться</>}
             </button>
             <button 
               type="button" 

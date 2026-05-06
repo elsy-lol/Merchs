@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { shopAPI } from '../api/shop';
+import { 
+  RecycleIcon, 
+  OfficialIcon, 
+  ShieldIcon, 
+  BoxIcon, 
+  StarIcon,
+  ArrowLeft 
+} from '../components/Icons';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -36,23 +44,11 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
     setAddingToCart(true);
-    
-    console.log('🛒 Добавляем в корзину:', {
-      product: product.id,
-      variant: selectedVariant?.id || null,
-      quantity: quantity  // ✅ Передаём выбранное количество!
-    });
-    
-    // ✅ Добавляем с выбранным количеством
     addToCart(product, selectedVariant, quantity);
-    
-    // Анимация/уведомление
     setTimeout(() => {
       setAddingToCart(false);
-      alert(`✅ Добавлено ${quantity} шт. в корзину!`);
-    }, 300);
+    }, 500);
   };
 
   const handleQuantityChange = (delta) => {
@@ -65,8 +61,10 @@ const ProductDetail = () => {
   if (loading) {
     return (
       <div className="product-detail-page">
-        <div className="loader">
-          <div className="loader-spinner"></div>
+        <div className="container">
+          <div className="loader">
+            <div className="loader-spinner"></div>
+          </div>
         </div>
       </div>
     );
@@ -75,9 +73,11 @@ const ProductDetail = () => {
   if (error || !product) {
     return (
       <div className="product-detail-page">
-        <div className="error-container">
-          <h1>❌ {error || 'Товар не найден'}</h1>
-          <Link to="/shop" className="btn btn-primary">В каталог</Link>
+        <div className="container">
+          <div className="error-container">
+            <h1 className="gradient-text">❌ {error || 'Товар не найден'}</h1>
+            <Link to="/shop" className="btn btn-primary mt-4">В каталог</Link>
+          </div>
         </div>
       </div>
     );
@@ -89,103 +89,128 @@ const ProductDetail = () => {
 
   return (
     <div className="product-detail-page">
-      <div className="product-detail-container">
-        {/* Галерея */}
-        <div className="product-gallery">
-          {product.images?.[0]?.image ? (
-            <img src={product.images[0].image} alt={product.name} className="product-main-image" />
-          ) : (
-            <div className="product-no-image">📷</div>
-          )}
-        </div>
+      <div className="container">
+        {/* Breadcrumbs / Back Link */}
+        <Link to="/shop" className="back-link mb-8 inline-flex items-center gap-2 text-muted hover:text-primary">
+          <ArrowLeft /> Назад в каталог
+        </Link>
 
-        {/* Информация */}
-        <div className="product-info">
-          <div className="product-badges">
-            {product.product_type === 'second_hand' ? (
-              <span className="badge badge-second-hand">♻️ Секонд</span>
-            ) : (
-              <span className="badge badge-official">🎤 Официальный</span>
-            )}
-            {product.is_negotiable && (
-              <span className="badge badge-negotiable">💰 Торг</span>
-            )}
-          </div>
-
-          <h1 className="product-title">{product.name}</h1>
-
-          {product.creator && (
-            <p className="product-creator">🎤 {product.creator.name}</p>
-          )}
-
-          <div className="product-price">{productPrice.toFixed(2)} ₽</div>
-
-          <p className="product-description">{product.description || 'Описание отсутствует'}</p>
-
-          {/* Выбор размера */}
-          {product.variants && product.variants.length > 0 && (
-            <div className="product-variants">
-              <label className="variants-label">Выберите размер:</label>
-              <div className="variants-grid">
-                {product.variants
-                  .filter(v => v.stock > 0)
-                  .map(variant => (
-                    <button
-                      key={variant.id}
-                      type="button"
-                      className={`variant-btn ${selectedVariant?.id === variant.id ? 'selected' : ''}`}
-                      onClick={() => setSelectedVariant(variant)}
-                    >
-                      {variant.size}
-                    </button>
-                  ))}
-              </div>
-              {selectedVariant && (
-                <p className="variant-stock">
-                  ✅ В наличии: {selectedVariant.stock} шт.
-                </p>
+        <div className="product-detail-container">
+          {/* Left: Gallery */}
+          <div className="product-gallery">
+            <div className="product-main-image-wrap animate-fade-in">
+              {product.images?.[0]?.image ? (
+                <img src={product.images[0].image} alt={product.name} className="product-main-image" />
+              ) : (
+                <div className="product-no-image"><BoxIcon size={80} /></div>
               )}
             </div>
-          )}
-
-          {/* Выбор количества */}
-          <div className="product-quantity">
-            <label className="quantity-label">Количество:</label>
-            <div className="quantity-controls">
-              <button
-                type="button"
-                className="quantity-btn"
-                onClick={() => handleQuantityChange(-1)}
-                disabled={quantity <= 1}
-              >
-                −
-              </button>
-              <span className="quantity-value">{quantity}</span>
-              <button
-                type="button"
-                className="quantity-btn"
-                onClick={() => handleQuantityChange(1)}
-              >
-                +
-              </button>
-            </div>
           </div>
 
-          {/* Кнопка добавления в корзину */}
-          <button
-            type="button"
-            className="add-to-cart-btn"
-            onClick={handleAddToCart}
-            disabled={addingToCart || (product.variants?.length > 0 && !selectedVariant)}
-          >
-            {addingToCart ? '⏳ Добавляю...' : '🛒 В корзину'}
-          </button>
+          {/* Right: Info */}
+          <div className="product-info animate-slide-up">
+            <div className="product-badges">
+              {product.product_type === 'second_hand' ? (
+                <span className="badge badge-purple"><RecycleIcon /> Second Hand</span>
+              ) : (
+                <span className="badge badge-primary"><OfficialIcon /> Official Merch</span>
+              )}
+              {product.is_negotiable && (
+                <span className="badge badge-success">💰 Торг возможен</span>
+              )}
+            </div>
 
-          {product.variants?.length > 0 && !selectedVariant && (
-            <p className="warning-text">⚠️ Выберите размер перед добавлением</p>
-          )}
+            <h1 className="product-title">{product.name}</h1>
 
-          <Link to="/shop" className="back-to-shop">← Назад в каталог</Link>
+            {product.creator && (
+              <Link to={`/shop/creator/${product.creator.id}`} className="product-creator-link">
+                <div className="creator-avatar-mini">
+                  {product.creator.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-muted uppercase">Создатель</div>
+                  <div className="font-bold">{product.creator.name}</div>
+                </div>
+              </Link>
+            )}
+
+            <div className="product-price-large gradient-text">
+              {productPrice.toLocaleString()} ₽
+            </div>
+
+            <p className="product-description">
+              {product.description || 'Этот товар пока не имеет подробного описания, но мы гарантируем его качество и аутентичность.'}
+            </p>
+
+            <div className="divider"></div>
+
+            {/* Selection Area */}
+            {product.variants && product.variants.length > 0 && (
+              <div className="product-variants">
+                <label className="variants-label">Размер</label>
+                <div className="variants-grid">
+                  {product.variants
+                    .filter(v => v.stock > 0)
+                    .map(variant => (
+                      <button
+                        key={variant.id}
+                        type="button"
+                        className={`variant-btn ${selectedVariant?.id === variant.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedVariant(variant)}
+                      >
+                        {variant.size}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className="product-actions-group">
+              <div className="quantity-selector">
+                <button 
+                  className="qty-btn" 
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 1}
+                >−</button>
+                <span className="quantity-value">{quantity}</span>
+                <button 
+                  className="qty-btn" 
+                  onClick={() => handleQuantityChange(1)}
+                >+</button>
+              </div>
+
+              <button
+                type="button"
+                className="add-to-cart-premium"
+                onClick={handleAddToCart}
+                disabled={addingToCart || (product.variants?.length > 0 && !selectedVariant)}
+              >
+                {addingToCart ? '⏳ Добавляем...' : '🛒 В корзину'}
+              </button>
+            </div>
+
+            {product.variants?.length > 0 && !selectedVariant && (
+              <p className="text-danger text-sm font-bold mt-2">
+                ⚠️ Пожалуйста, выберите размер перед покупкой
+              </p>
+            )}
+
+            {/* Trust Badges Area */}
+            <div className="trust-badges-grid">
+              <div className="trust-item">
+                <div className="trust-icon"><ShieldIcon /></div>
+                <div className="trust-label">Оригинал</div>
+              </div>
+              <div className="trust-item">
+                <div className="trust-icon"><StarIcon /></div>
+                <div className="trust-label">Качество</div>
+              </div>
+              <div className="trust-item">
+                <div className="trust-icon"><BoxIcon /></div>
+                <div className="trust-label">Доставка</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

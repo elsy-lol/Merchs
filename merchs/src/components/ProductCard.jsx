@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { 
+  HeartIcon, 
+  RecycleIcon, 
+  OfficialIcon, 
+  BoxIcon, 
+  StarIcon 
+} from './Icons';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -20,14 +27,11 @@ const ProductCard = ({ product }) => {
     try {
       const token = localStorage.getItem('access_token');
       const response = await fetch(`http://localhost:8000/api/shop/wishlist/?product_id=${product.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       
       if (response.ok) {
         const data = await response.json();
-        console.log('📋 Проверка избранного:', data);
         setIsFavorite(Array.isArray(data) && data.length > 0);
       }
     } catch (error) {
@@ -36,109 +40,105 @@ const ProductCard = ({ product }) => {
   };
 
   const toggleFavorite = async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  if (!isAuthenticated) {
-    alert('❤️ Войдите, чтобы добавлять в избранное!');
-    window.location.href = '/login';
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const token = localStorage.getItem('access_token');
+    e.preventDefault();
+    e.stopPropagation();
     
-    if (isFavorite) {
-      // Удаляем
-      const wishlistRes = await fetch(`http://localhost:8000/api/shop/wishlist/?product_id=${product.id}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+    if (!isAuthenticated) {
+      alert('❤️ Войдите, чтобы добавлять в избранное!');
+      window.location.href = '/login';
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('access_token');
       
-      if (wishlistRes.ok) {
-        const wishlistData = await wishlistRes.json();
-        if (wishlistData.length > 0) {
-          await fetch(`http://localhost:8000/api/shop/wishlist/${wishlistData[0].id}/`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` },
-          });
-          setIsFavorite(false);
-          console.log('❌ Удалено из избранного');
+      if (isFavorite) {
+        const wishlistRes = await fetch(`http://localhost:8000/api/shop/wishlist/?product_id=${product.id}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        
+        if (wishlistRes.ok) {
+          const wishlistData = await wishlistRes.json();
+          if (wishlistData.length > 0) {
+            await fetch(`http://localhost:8000/api/shop/wishlist/${wishlistData[0].id}/`, {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${token}` },
+            });
+            setIsFavorite(false);
+          }
+        }
+      } else {
+        const response = await fetch('http://localhost:8000/api/shop/wishlist/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ product_id: product.id }),
+        });
+        
+        if (response.ok) {
+          setIsFavorite(true);
         }
       }
-    } else {
-      // Добавляем
-      const response = await fetch('http://localhost:8000/api/shop/wishlist/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ product_id: product.id }),
-      });
-      
-      // ✅ Принимаем и 200, и 201 статусы
-      if (response.ok) {
-        setIsFavorite(true);
-        console.log('✅ Добавлено в избранное');
-      } else {
-        const error = await response.json();
-        console.error('❌ Ошибка:', error);
-        alert('❌ Не удалось добавить: ' + (error.detail || 'Неизвестная ошибка'));
-      }
+    } catch (error) {
+      console.error('❌ Ошибка избранного:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('❌ Исключение:', error);
-    alert('❌ Произошла ошибка');
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const isSecondHand = product.product_type === 'second_hand';
-  
-  const conditionLabels = {
-    'excellent': 'Отл.',
-    'good': 'Хор.',
-    'fair': 'Б/У',
   };
 
+  const isSecondHand = product.product_type === 'second_hand';
+
   return (
-    <Link to={`/product/${product.id}`} className="product-card">
-      <div className="product-card-image">
-        {product.images?.[0]?.image ? (
-          <img src={product.images[0].image} alt={product.name} />
-        ) : (
-          <div className="product-card-no-image">📷</div>
-        )}
-        
-        <span className="product-card-badge">
-          {isSecondHand ? '♻️ Секонд' : '🎤 Мерч'}
-        </span>
-        
-        {isSecondHand && product.condition && (
-          <span className="product-card-condition">
-            {conditionLabels[product.condition]}
-          </span>
-        )}
-        
+    <Link to={`/product/${product.id}`} className="product-card animate-fade-in">
+      <div className="product-card-image-wrap">
+        {/* Badge */}
+        <div className={`card-badge-p ${isSecondHand ? 'badge-second-hand' : 'badge-merch'}`}>
+          {isSecondHand ? <RecycleIcon size={14} /> : <OfficialIcon size={14} />}
+          {isSecondHand ? 'Second Hand' : 'Drop'}
+        </div>
+
+        {/* Favorite Button */}
         <button 
-          className={`product-card-favorite ${isFavorite ? 'active' : ''} ${loading ? 'loading' : ''}`}
+          className={`fav-btn-p ${isFavorite ? 'active' : ''} ${loading ? 'loading' : ''}`}
           onClick={toggleFavorite}
           disabled={loading}
-          title={isFavorite ? 'Удалить из избранного' : 'В избранное'}
         >
-          {loading ? '⏳' : isFavorite ? '❤️' : '🤍'}
+          <HeartIcon size={20} fill={isFavorite ? 'currentColor' : 'none'} />
         </button>
+
+        {/* Product Image */}
+        {product.images?.[0]?.image ? (
+          <img src={product.images[0].image} alt={product.name} loading="lazy" />
+        ) : (
+          <div className="flex items-center justify-center h-full text-muted">
+            <BoxIcon size={60} opacity={0.2} />
+          </div>
+        )}
+
+        {/* Quick Buy Overlay */}
+        <div className="card-quick-buy">
+          Посмотреть детали
+        </div>
       </div>
       
-      <div className="product-card-info">
-        <h3 className="product-card-name">{product.name}</h3>
-        {product.creator && <p className="product-card-creator">🎤 {product.creator.name}</p>}
-        <div className="product-card-price-row">
-          <span className="product-card-price">{product.price} ₽</span>
-          {product.is_negotiable && <span className="product-card-negotiable">💰 Торг</span>}
+      <div className="product-card-details">
+        <h3 className="card-title-p">{product.name}</h3>
+        
+        {product.creator && (
+          <div className="card-creator-p">
+            <StarIcon size={14} className="text-accent" />
+            {product.creator.name}
+          </div>
+        )}
+        
+        <div className="card-price-row-p">
+          <span className="card-price-p">{parseFloat(product.price).toLocaleString()} ₽</span>
+          {product.is_negotiable && (
+            <span className="card-negotiable-badge">Торг</span>
+          )}
         </div>
       </div>
     </Link>

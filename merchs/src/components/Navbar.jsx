@@ -4,11 +4,25 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../hooks/useCart';
+import { useTheme } from '../context/ThemeContext';
+import { 
+  LogoIcon, 
+  ShopIcon, 
+  InfoIcon, 
+  UserIcon, 
+  HeartIcon, 
+  LogoutIcon, 
+  LoginIcon, 
+  RegisterIcon, 
+  SunIcon, 
+  MoonIcon 
+} from './Icons';
 import './Navbar.css';
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { itemCount } = useCart();
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,8 +42,20 @@ const Navbar = () => {
       <div className="navbar-container">
         {/* Logo */}
         <Link to="/" className="navbar-logo" onClick={() => setMobileMenuOpen(false)}>
-          🎨 MerchMarket
+          <LogoIcon /> MerchMarket
         </Link>
+
+        {/* Action Group (Always visible on desktop, moved in mobile) */}
+        <div className="navbar-actions-desktop">
+          <button 
+            className="theme-toggle" 
+            onClick={toggleTheme}
+            aria-label="Переключить тему"
+            title={isDarkMode ? "Светлая тема" : "Темная тема"}
+          >
+            {isDarkMode ? <SunIcon /> : <MoonIcon />}
+          </button>
+        </div>
 
         {/* Mobile toggle */}
         <button 
@@ -49,16 +75,18 @@ const Navbar = () => {
             className={`navbar-link ${isActive('/shop') ? 'active' : ''}`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            🛒 Каталог
+            <ShopIcon /> Каталог
           </Link>
           <Link 
             to="/about" 
             className={`navbar-link ${isActive('/about') ? 'active' : ''}`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            ℹ️ О нас
+            <InfoIcon /> О нас
           </Link>
           
+          <div className="navbar-divider-mobile"></div>
+
           {isAuthenticated ? (
             <>
               <Link 
@@ -66,7 +94,7 @@ const Navbar = () => {
                 className={`navbar-link navbar-cart ${isActive('/cart') ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                🛒 Корзина
+                <ShopIcon /> Корзина
                 {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
               </Link>
               <Link 
@@ -74,20 +102,20 @@ const Navbar = () => {
                 className={`navbar-link ${isActive('/profile') ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                👤 {user?.username}
+                <UserIcon /> {user?.username}
               </Link>
               <Link 
                 to="/wishlist" 
                 className={`navbar-link ${isActive('/wishlist') ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                ❤️ Избранное
+                <HeartIcon /> Избранное
               </Link>
               <button 
                 onClick={handleLogout} 
                 className="navbar-link navbar-logout"
               >
-                🚪 Выйти
+                <LogoutIcon /> Выйти
               </button>
             </>
           ) : (
@@ -97,17 +125,28 @@ const Navbar = () => {
                 className={`navbar-link ${isActive('/login') ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                🔐 Вход
+                <LoginIcon /> Вход
               </Link>
               <Link 
                 to="/register" 
                 className="navbar-link navbar-register"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                📝 Регистрация
+                <RegisterIcon /> Регистрация
               </Link>
             </>
           )}
+
+          {/* Theme toggle for mobile menu */}
+          <div className="navbar-theme-mobile">
+             <button 
+                className="theme-toggle" 
+                onClick={toggleTheme}
+                aria-label="Переключить тему"
+              >
+                {isDarkMode ? <><SunIcon /> Светлая тема</> : <><MoonIcon /> Темная тема</>}
+              </button>
+          </div>
         </div>
       </div>
     </nav>

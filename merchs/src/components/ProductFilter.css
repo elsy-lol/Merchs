@@ -1,17 +1,16 @@
 /* ========================================
-   PRODUCT FILTER SIDEBAR - DNS STYLE
+   PRODUCT FILTER SIDEBAR - PREMIUM STYLE
    ======================================== */
 
 .product-filter-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.5rem;
 }
 
-/* Секции фильтров */
 .filter-section {
+  padding: 1rem 0;
   border-bottom: 1px solid var(--border-color);
-  padding: 0.75rem 0;
 }
 
 .filter-section:last-child {
@@ -23,183 +22,157 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 0.9rem;
   color: var(--text-primary);
-  transition: color 0.2s;
-}
-
-.filter-section-title:hover {
-  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .filter-arrow {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
-  transition: transform 0.2s;
+  transition: transform var(--transition-fast);
 }
 
 .filter-arrow.open {
   transform: rotate(180deg);
 }
 
-.filter-section-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding-top: 0.5rem;
-  animation: slideDown 0.2s ease;
-}
-
-/* Чекбоксы и радио */
-.filter-checkbox {
+/* Search Box */
+.search-box {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: var(--radius-md);
-  transition: background 0.2s;
 }
 
-.filter-checkbox:hover {
-  background: var(--bg-secondary);
-}
-
-.filter-checkbox input {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: var(--accent-primary);
-}
-
-.filter-checkbox span {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.filter-checkbox input:checked + span {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* Инпуты */
-.filter-input {
+.filter-search-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
+  padding-right: 2.5rem;
   background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   font-size: 0.95rem;
   color: var(--text-primary);
+  transition: all var(--transition-fast);
 }
 
-.filter-input:focus {
+.filter-search-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 4px rgba(255, 0, 110, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  opacity: 0.5;
+}
+
+/* Price Inputs */
+.price-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-input {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.price-input:focus {
   outline: none;
   border-color: var(--accent-primary);
 }
 
-/* Кнопка сброса */
-.filter-clear-btn {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1rem;
-  background: transparent;
-  color: var(--accent-danger);
-  border: 2px solid var(--accent-danger);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+.price-dash {
+  color: var(--text-muted);
 }
 
-.filter-clear-btn:hover {
-  background: var(--accent-danger);
-  color: var(--text-inverse);
+/* Chips */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
 }
 
-/* Скроллбар */
-.filters-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.filters-sidebar::-webkit-scrollbar-track {
+.filter-chip {
+  padding: 0.625rem 1rem;
   background: var(--bg-secondary);
-}
-
-.filters-sidebar::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
-}
-/* Кнопка избранного */
-.product-card-favorite {
-  position: absolute;
-  top: 12px;
-  right: 55px;
-  width: 40px;
-  height: 40px;
-  background: var(--bg-primary);
-  border: 2px solid var(--border-color);
-  border-radius: 50%;
-  font-size: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.filter-chip.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);
+}
+
+/* Options (Sorting) */
+.filter-options {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  opacity: 0;
-  transform: translateX(10px);
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.5rem;
 }
 
-.product-card:hover .product-card-favorite {
-  opacity: 1;
-  transform: translateX(0);
+.filter-option {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.product-card-favorite:hover {
-  background: var(--accent-danger);
-  border-color: var(--accent-danger);
-  color: var(--text-inverse);
-  transform: scale(1.1);
+.filter-option:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
-/* ✅ Активное состояние (в избранном) */
-.product-card-favorite.active {
-  opacity: 1;
-  transform: translateX(0);
-  background: var(--accent-danger);
-  border-color: var(--accent-danger);
+.filter-option.active {
+  background: rgba(255, 0, 110, 0.05);
+  color: var(--accent-primary);
+  font-weight: 700;
 }
 
-/* ✅ Состояние загрузки */
-.product-card-favorite.loading {
-  cursor: wait;
-  opacity: 0.7;
+/* Animations */
+.filter-section-content, .filter-chips, .filter-options {
+  animation: slideDown 0.3s ease-out;
 }
 
-.product-card-favorite:disabled {
-  cursor: not-allowed;
-}
-
-/* Анимация сердца */
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-}
-
-.product-card-favorite.active {
-  animation: heartBeat 0.3s ease-in-out;
-}
-
-@media (max-width: 640px) {
-  .product-card-favorite {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

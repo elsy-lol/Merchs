@@ -1,20 +1,23 @@
 // src/pages/ProductList.jsx
 
 import { useEffect, useState, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { shopAPI } from '../api/shop';
 import ProductCard from '../components/ProductCard';
 import ProductFilter from '../components/ProductFilter';
+import { FilterIcon } from '../components/Icons';
 import './ProductList.css';
 
 const ProductList = () => {
+  const { creatorId } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // ✅ Активные фильтры (применены к API)
-  const [activeFilters, setActiveFilters] = useState({});
+  const [activeFilters, setActiveFilters] = useState({ ...(creatorId ? { creator: creatorId } : {}) });
   
   // ✅ Отложенные фильтры (выбрал пользователь)
-  const [pendingFilters, setPendingFilters] = useState({});
+  const [pendingFilters, setPendingFilters] = useState({ ...(creatorId ? { creator: creatorId } : {}) });
   
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   
@@ -34,6 +37,13 @@ const ProductList = () => {
       setLoading(false);
     }
   };
+
+  // ✅ Обновляем фильтры, если изменился автор в URL
+  useEffect(() => {
+    const initialFilters = creatorId ? { creator: creatorId } : {};
+    setActiveFilters(initialFilters);
+    setPendingFilters(initialFilters);
+  }, [creatorId]);
 
   // ✅ Загружаем товары только при изменении activeFilters
   useEffect(() => {
@@ -55,7 +65,7 @@ const ProductList = () => {
 
   // ✅ Сбросить фильтры
   const handleResetFilters = () => {
-    const emptyFilters = {};
+    const emptyFilters = creatorId ? { creator: creatorId } : {};
     setPendingFilters(emptyFilters);
     setActiveFilters(emptyFilters);
     setMobileFiltersOpen(false);
@@ -77,7 +87,7 @@ const ProductList = () => {
         className="mobile-filters-toggle"
         onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
       >
-        📑 Фильтры
+        <FilterIcon /> Фильтры
         {hasPendingChanges && <span className="pending-indicator">●</span>}
       </button>
 
@@ -98,6 +108,7 @@ const ProductList = () => {
           <ProductFilter 
             filters={pendingFilters} 
             onFilterChange={handleFilterChange} 
+            fixedCreatorId={creatorId}
           />
           
           {/* ✅ Кнопки применения */}
@@ -107,7 +118,7 @@ const ProductList = () => {
               onClick={handleResetFilters}
               className="btn-reset"
             >
-              🔄 Сбросить
+              Сбросить
             </button>
             <button
               type="button"
@@ -123,6 +134,11 @@ const ProductList = () => {
         {/* ✅ ОСНОВНОЙ КОНТЕНТ */}
         <main className="product-list-content">
           <div className="product-list-header">
+            {creatorId && (
+              <Link to="/shop" className="btn-back-creators">
+                &larr; К списку авторов
+              </Link>
+            )}
             <h1 className="product-list-title">Каталог</h1>
             <p className="product-list-count">
               Найдено: <strong>{products.length}</strong> товаров
@@ -132,7 +148,7 @@ const ProductList = () => {
                 onClick={handleApplyFilters}
                 className="btn-apply-float"
               >
-                ✅ Применить ({products.length})
+                Применить ({products.length})
               </button>
             )}
           </div>
@@ -143,7 +159,7 @@ const ProductList = () => {
               <p className="product-list-empty-text">Товары не найдены</p>
               {hasPendingChanges && (
                 <button onClick={handleResetFilters} className="btn-reset-float">
-                  🔄 Сбросить фильтры
+                  Сбросить фильтры
                 </button>
               )}
             </div>

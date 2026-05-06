@@ -160,7 +160,7 @@ const Login = () => {
                 tabIndex={-1}
                 aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
           </div>
@@ -173,7 +173,7 @@ const Login = () => {
               className="auth-btn" 
               style={{ flex: 1 }}
             >
-              {loading ? '⏳ Вход...' : '🔐 Войти'}
+              {loading ? '⏳ Вход...' : <><LoginIcon /> Войти</>}
             </button>
             <button 
               type="button" 
@@ -183,12 +183,12 @@ const Login = () => {
               style={{ 
                 flex: 0.4, 
                 background: 'var(--bg-secondary)',
-                border: '2px solid var(--border-color)',
+                border: '1px solid var(--border-color)',
                 color: 'var(--text-secondary)',
               }}
               title="Очистить форму"
             >
-              🗑️
+              <TrashIcon />
             </button>
           </div>
         </form>
