@@ -196,3 +196,12 @@ SPECTACULAR_SETTINGS = {
 import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# === Настройки Email (SMTP) ===
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Например для Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'vash_email@gmail.com'  # Замените на вашу почту
+EMAIL_HOST_PASSWORD = 'vash_parol_prilozheniya'  # Замените на пароль приложения
+DEFAULT_FROM_EMAIL = 'Merch Market <' + EMAIL_HOST_USER + '>'

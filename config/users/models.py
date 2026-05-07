@@ -9,14 +9,23 @@ class User(AbstractUser):
     ]
     
     
+    TWO_FACTOR_CHOICES = [
+        ('none', 'Выключено'),
+        ('email', 'Электронная почта'),
+        ('sms', 'SMS'),
+    ]
+
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='buyer')
     phone = models.CharField(max_length=20, blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='buyer')
     is_verified_seller = models.BooleanField(default=False)
     seller_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     bio = models.TextField(blank=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    is_2fa_enabled = models.BooleanField(default=False)
+    two_factor_method = models.CharField(max_length=10, choices=TWO_FACTOR_CHOICES, default='none')
+    two_factor_code = models.CharField(max_length=6, blank=True, null=True)
     
     # Переопределяем группы и разрешения
     groups = models.ManyToManyField(

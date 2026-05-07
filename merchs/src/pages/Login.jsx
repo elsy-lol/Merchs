@@ -1,202 +1,232 @@
 // src/pages/Login.jsx
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { 
+  LoginIcon, 
+  TrashIcon, 
+  EyeIcon, 
+  EyeOffIcon,
+  LogoIcon,
+  OfficialIcon
+} from '../components/Icons';
 import './Auth.css';
 
-// ✅ Начальное состояние формы
 const initialFormData = {
   username: '',
   password: '',
 };
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, verifyLogin2FA, resend2FACode } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [formData, setFormData] = useState(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Обработчик изменения полей
+  // 2FA State
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [twoFactorInfo, setTwoFactorInfo] = useState(null);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => setTimer(t => t - 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-    // ✅ Очищаем ошибку при вводе
+    setFormData(prev => ({ ...prev, [name]: value }));
     if (error) setError('');
   };
 
-  // ✅ Очистка всей формы
   const handleClear = () => {
     setFormData(initialFormData);
     setError('');
+    setSuccessMsg('');
     setShowPassword(false);
+    setShow2FA(false);
   };
 
-  // ✅ Валидация формы
-  const validateForm = () => {
-    if (!formData.username.trim()) {
-      return '❌ Имя пользователя или email обязателен';
-    }
-    if (!formData.password) {
-      return '❌ Пароль обязателен';
-    }
-    return null;
-  };
-
-  // ✅ Отправка формы
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    // Валидация
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
     setLoading(true);
-
+    setError('');
     try {
       const result = await login(formData.username, formData.password);
-
       if (result.success) {
-        console.log('✅ Вход успешен!');
-        handleClear(); // ✅ Очищаем форму после успеха
-        navigate('/');
+        if (result.twoFactorRequired) {
+          setShow2FA(true);
+          setTwoFactorInfo(result);
+          setTimer(60); // 1 minute cooldown
+        } else {
+          navigate('/');
+        }
       } else {
-        setError(result.error || 'Неверный логин или пароль');
+        setError(result.error);
       }
     } catch (err) {
-      console.error('❌ Ошибка входа:', err);
-      setError('Произошла ошибка. Попробуйте снова.');
+      setError('Критическая ошибка сервера');
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ Обработчик нажатия Enter в поле пароля
-  const handlePasswordKeyDown = (e) => {
-    if (e.key === 'Enter' && !loading) {
-      handleSubmit(e);
+  const handle2FASubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const result = await verifyLogin2FA(twoFactorInfo.username, twoFactorCode);
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Ошибка верификации');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (timer > 0) return;
+    setLoading(true);
+    try {
+      const result = await resend2FACode(twoFactorInfo.username);
+      if (result.success) {
+        setSuccessMsg('✅ Код отправлен повторно');
+        setTimer(60);
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Ошибка отправки');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <h1 className="auth-title">ВХОД</h1>
-          <p className="auth-subtitle">
-            Нет аккаунта? <Link to="/register" className="auth-link">Зарегистрироваться</Link>
-          </p>
+      <div className="auth-container-premium">
+        <div className="auth-header-p">
+          <div className="flex justify-center mb-6 text-accent">
+            <LogoIcon />
+          </div>
+          <h1 className="auth-title-p gradient-text">
+            {show2FA ? 'Защита 2FA' : 'Авторизация'}
+          </h1>
         </div>
 
         {error && (
-          <div className="auth-error">
-            ⚠️ {error}
-            <button type="button" onClick={() => setError('')} className="error-close">✕</button>
+          <div className="error-banner-p animate-fade-in">
+            <span>{error}</span>
+            <button onClick={() => setError('')}>✕</button>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="auth-form" noValidate>
-          <div className="form-group">
-            <label className="auth-label" htmlFor="username">Имя пользователя или email *</label>
-            <input
-              id="username"
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              placeholder="username или email@example.com"
-              className="auth-input"
-              disabled={loading}
-              autoComplete="username"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck="false"
-            />
+        {successMsg && (
+          <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 p-3 rounded-lg text-sm mb-4 animate-fade-in text-center">
+            {successMsg}
           </div>
+        )}
 
-          <div className="form-group">
-            <label className="auth-label" htmlFor="password">Пароль *</label>
-            <div style={{ position: 'relative' }}>
+        {!show2FA ? (
+          <form onSubmit={handleSubmit} className="auth-form-p">
+            <div className="input-group-p">
+              <label className="label-p">Логин / Email</label>
               <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
+                type="text"
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
-                onKeyDown={handlePasswordKeyDown}
+                placeholder="Твой никнейм"
+                className="auth-input-p"
                 required
-                placeholder="••••••••"
-                className="auth-input"
-                style={{ paddingRight: '40px' }}
-                disabled={loading}
-                autoComplete="current-password"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  padding: '0 5px',
-                  lineHeight: '1',
-                }}
-                tabIndex={-1}
-                aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-              >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </div>
+
+            <div className="input-group-p">
+              <label className="label-p">Пароль</label>
+              <div className="input-wrapper-p">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="auth-input-p"
+                  required
+                />
+                <button type="button" className="eye-btn-p" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
+            </div>
+
+            <div className="auth-actions-p">
+              <button type="submit" className="submit-btn-p" disabled={loading}>
+                {loading ? 'Проверка...' : <><LoginIcon /> Войти</>}
+              </button>
+              <button type="button" className="reset-btn-p" onClick={handleClear} disabled={loading}>
+                <TrashIcon />
               </button>
             </div>
-          </div>
+          </form>
+        ) : (
+          <form onSubmit={handle2FASubmit} className="auth-form-p">
+            <p className="text-center mb-6 opacity-70 text-sm">
+              Код отправлен на вашу почту. Если письма нет, проверьте спам или запросите код повторно.
+            </p>
+            <div className="input-group-p">
+              <label className="label-p">Код из письма</label>
+              <input
+                type="text"
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                className="auth-input-p text-center text-2xl tracking-widest"
+                maxLength="6"
+                required
+                autoFocus
+              />
+            </div>
 
-          {/* Кнопки */}
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <button 
-              type="submit" 
-              disabled={loading || !formData.username.trim() || !formData.password} 
-              className="auth-btn" 
-              style={{ flex: 1 }}
-            >
-              {loading ? '⏳ Вход...' : <><LoginIcon /> Войти</>}
-            </button>
-            <button 
-              type="button" 
-              onClick={handleClear} 
-              disabled={loading}
-              className="auth-btn" 
-              style={{ 
-                flex: 0.4, 
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-secondary)',
-              }}
-              title="Очистить форму"
-            >
-              <TrashIcon />
-            </button>
-          </div>
-        </form>
+            <div className="auth-actions-p">
+              <button type="submit" className="submit-btn-p" disabled={loading || twoFactorCode.length < 6}>
+                {loading ? 'Входим...' : <><OfficialIcon /> Подтвердить</>}
+              </button>
+            </div>
 
-        <div className="auth-footer">
-          <p>
-            Забыли пароль? <Link to="/reset-password" style={{ color: 'var(--accent-primary)' }}>Восстановить</Link>
-          </p>
+            <div className="mt-6 text-center">
+              <button 
+                type="button" 
+                onClick={handleResend}
+                disabled={timer > 0 || loading}
+                className={`text-sm transition-all ${timer > 0 ? 'opacity-40 cursor-not-allowed' : 'text-accent hover:underline'}`}
+              >
+                {timer > 0 ? `Повторная отправка через ${timer}с` : 'Отправить код еще раз'}
+              </button>
+            </div>
+            
+            <button type="button" onClick={() => setShow2FA(false)} className="mt-4 w-full opacity-50 text-xs hover:opacity-100 transition-opacity">
+              Вернуться назад
+            </button>
+          </form>
+        )}
+
+        <div className="auth-footer-p">
+          <p className="text-xs opacity-40">Merch Market &copy; 2026. Secure Access.</p>
         </div>
       </div>
     </div>

@@ -69,26 +69,53 @@ const About = () => {
         </div>
       </section>
 
-      {/* Stats Counter */}
+      {/* Stats Counter - Marquee Effect */}
       <section className="about-stats">
-        <div className="container">
-          <div className="stats-grid">
+        <div className="marquee-container">
+          <div className="stats-track">
             <div className="stat-box">
               <div className="stat-val">100+</div>
               <div className="stat-desc">Брендов и артистов</div>
             </div>
+            <div className="marquee-dot"></div>
             <div className="stat-box">
               <div className="stat-val">50K</div>
               <div className="stat-desc">Довольных фанатов</div>
             </div>
+            <div className="marquee-dot"></div>
             <div className="stat-box">
               <div className="stat-val">10K</div>
               <div className="stat-desc">Уникальных лотов</div>
             </div>
+            <div className="marquee-dot"></div>
             <div className="stat-box">
               <div className="stat-val">100%</div>
               <div className="stat-desc">Гарантия оригинал</div>
             </div>
+            <div className="marquee-dot"></div>
+          </div>
+          {/* Duplicate for seamless loop */}
+          <div className="stats-track" aria-hidden="true">
+            <div className="stat-box">
+              <div className="stat-val">100+</div>
+              <div className="stat-desc">Брендов и артистов</div>
+            </div>
+            <div className="marquee-dot"></div>
+            <div className="stat-box">
+              <div className="stat-val">50K</div>
+              <div className="stat-desc">Довольных фанатов</div>
+            </div>
+            <div className="marquee-dot"></div>
+            <div className="stat-box">
+              <div className="stat-val">10K</div>
+              <div className="stat-desc">Уникальных лотов</div>
+            </div>
+            <div className="marquee-dot"></div>
+            <div className="stat-box">
+              <div className="stat-val">100%</div>
+              <div className="stat-desc">Гарантия оригинал</div>
+            </div>
+            <div className="marquee-dot"></div>
           </div>
         </div>
       </section>
@@ -107,6 +134,7 @@ const About = () => {
               <div className="team-info-wrap">
                 <span className="team-label">Tech</span>
                 <h4 className="team-name">Разработка</h4>
+                <p className="team-desc">Архитектура будущего, быстрый код и стабильность дропов.</p>
               </div>
             </div>
             
@@ -115,6 +143,7 @@ const About = () => {
               <div className="team-info-wrap">
                 <span className="team-label">Creative</span>
                 <h4 className="team-name">Дизайн</h4>
+                <p className="team-desc">Визуальный язык улиц, эстетика и интерфейс нового поколения.</p>
               </div>
             </div>
             
@@ -123,6 +152,7 @@ const About = () => {
               <div className="team-info-wrap">
                 <span className="team-label">Ops</span>
                 <h4 className="team-name">Логистика</h4>
+                <p className="team-desc">Доставка в любую точку, контроль качества и упаковка с душой.</p>
               </div>
             </div>
             
@@ -131,6 +161,7 @@ const About = () => {
               <div className="team-info-wrap">
                 <span className="team-label">Support</span>
                 <h4 className="team-name">Забота</h4>
+                <p className="team-desc">Всегда на связи, решение любых вопросов и искренняя помощь.</p>
               </div>
             </div>
           </div>
@@ -141,6 +172,12 @@ const About = () => {
       <section className="about-cta">
         <div className="container">
           <div className="cta-glass">
+            <div className="cta-floating-icons">
+              <StarIcon />
+              <PaletteIcon />
+              <GemIcon />
+              <BoxIcon />
+            </div>
             <h2 className="cta-title-alt">Стань частью<br />Культуры</h2>
             <p className="cta-subtitle">
               Зарегистрируйся сегодня и получи доступ к закрытым распродажам 

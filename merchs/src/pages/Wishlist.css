@@ -1,5 +1,5 @@
 /* ========================================
-   WISHLIST PAGE - PREMIUM STREETWEAR REDESIGN
+   WISHLIST PAGE - ANIMATED PREMIUM REDESIGN
    ======================================== */
 
 .wishlist-page {
@@ -7,12 +7,45 @@
   min-height: 100vh;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 }
 
+/* Animated floating background particles */
+.wishlist-page::before,
+.wishlist-page::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatBg 8s ease-in-out infinite;
+}
+
+.wishlist-page::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 0, 110, 0.08) 0%, transparent 70%);
+  top: -100px;
+  left: -100px;
+}
+
+.wishlist-page::after {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(131, 56, 236, 0.07) 0%, transparent 70%);
+  bottom: -80px;
+  right: -80px;
+  animation-delay: -4s;
+}
+
+/* Header */
 .wishlist-header-premium {
   text-align: center;
   margin-bottom: 4rem;
-  animation: fadeDown 0.8s ease-out;
+  position: relative;
+  z-index: 1;
+  animation: slideDownFade 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .wishlist-title-premium {
@@ -27,12 +60,20 @@
   gap: 1.5rem;
 }
 
+/* Heart icon heartbeat */
+.wishlist-title-premium svg {
+  animation: heartbeat 1.6s ease-in-out infinite;
+  color: var(--accent-primary);
+  filter: drop-shadow(0 0 12px var(--accent-primary));
+}
+
 .wishlist-subtitle {
   font-size: 1rem;
   font-weight: 800;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.2em;
+  animation: slideDownFade 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
 
 /* Grid Layout */
@@ -40,19 +81,56 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2.5rem;
-  animation: fadeInUp 0.8s ease-out both;
+  position: relative;
+  z-index: 1;
 }
 
+/* Item wrapper — staggered entrance via inline style delay */
 .wishlist-item-wrapper {
   position: relative;
-  transition: transform 0.3s ease;
+  animation: cardEntrance 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .wishlist-item-wrapper:hover {
-  transform: translateY(-10px);
+  z-index: 5;
 }
 
-/* Custom Remove Button */
+/* Hover lift */
+.wishlist-item-wrapper > *:first-child {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s ease;
+}
+
+.wishlist-item-wrapper:hover > *:first-child {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Shimmer overlay on hover */
+.wishlist-item-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.wishlist-item-wrapper:hover::after {
+  opacity: 1;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Removal animation */
+.wishlist-item-wrapper.removing {
+  animation: removeItem 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Remove button */
 .wishlist-remove-premium {
   position: absolute;
   top: 15px;
@@ -69,18 +147,26 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  opacity: 0;
+  transform: scale(0.7) rotate(-15deg);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: var(--shadow-md);
+}
+
+.wishlist-item-wrapper:hover .wishlist-remove-premium {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
 }
 
 .wishlist-remove-premium:hover {
   background: var(--accent-danger);
   color: white;
   border-color: var(--accent-danger);
-  transform: scale(1.1) rotate(10deg);
+  transform: scale(1.15) rotate(12deg) !important;
+  box-shadow: 0 8px 20px rgba(255, 0, 68, 0.4);
 }
 
-/* Empty State Redesign */
+/* Empty States */
 .wishlist-empty-premium {
   max-width: 600px;
   margin: 4rem auto;
@@ -90,20 +176,16 @@
   border-radius: 40px;
   text-align: center;
   box-shadow: var(--shadow-lg);
+  animation: slideDownFade 0.6s ease both;
 }
 
 .empty-heart-icon {
-  font-size: 5rem;
   color: var(--accent-primary);
   margin-bottom: 2rem;
-  opacity: 0.8;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 0 20px var(--accent-primary));
+  animation: heartbeat 1.6s ease-in-out infinite;
 }
 
 .empty-title-p {
@@ -119,15 +201,43 @@
   font-size: 1.1rem;
 }
 
-/* Animations */
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ==========================================
+   KEYFRAMES
+   ========================================== */
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-25px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes removeItem {
+  0%   { opacity: 1; transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(0.9) rotate(-3deg); }
+  100% { opacity: 0; transform: scale(0.7) translateY(20px); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15%       { transform: scale(1.2); }
+  30%       { transform: scale(1); }
+  45%       { transform: scale(1.12); }
+  60%       { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes floatBg {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 15px) scale(0.95); }
 }
 
 /* Responsive */
@@ -135,8 +245,13 @@
   .wishlist-grid-premium {
     grid-template-columns: 1fr;
   }
-  
+
   .wishlist-title-premium {
     font-size: 2.5rem;
+  }
+
+  .wishlist-remove-premium {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 }

@@ -3,7 +3,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { RegisterIcon, TrashIcon, EyeIcon, EyeOffIcon } from '../components/Icons';
+import { 
+  RegisterIcon, 
+  TrashIcon, 
+  EyeIcon, 
+  EyeOffIcon,
+  LogoIcon 
+} from '../components/Icons';
 import './Auth.css';
 
 const initialFormData = {
@@ -11,8 +17,6 @@ const initialFormData = {
   email: '',
   password: '',
   password_confirm: '',
-  first_name: '',
-  last_name: '',
 };
 
 const Register = () => {
@@ -36,51 +40,14 @@ const Register = () => {
   };
 
   const validateForm = () => {
-    // ✅ Валидация username
-    if (!formData.username.trim()) {
-      return '❌ Имя пользователя обязательно';
-    }
-    if (formData.username.length < 3) {
-      return '❌ Имя пользователя должно быть не менее 3 символов';
-    }
-    if (!/^[a-zA-Z0-9@./+\-_]+$/.test(formData.username)) {
-      return '❌ Имя пользователя может содержать только буквы, цифры и @/./+/-/_';
-    }
-
-    // ✅ Валидация email
-    if (!formData.email.trim()) {
-      return '❌ Email обязателен';
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      return '❌ Неверный формат email';
-    }
-
-    // ✅ Валидация пароля
-    if (!formData.password) {
-      return '❌ Пароль обязателен';
-    }
-    if (formData.password.length < 6) {
-      return '❌ Пароль должен быть не менее 6 символов';
-    }
-    if (/^\d+$/.test(formData.password)) {
-      return '❌ Пароль не должен состоять только из цифр';
-    }
-    if (formData.password === formData.username) {
-      return '❌ Пароль не должен совпадать с именем пользователя';
-    }
-
-    // ✅ Подтверждение пароля
-    if (formData.password !== formData.password_confirm) {
-      return '❌ Пароли не совпадают';
-    }
-
+    if (!formData.username || !formData.email || !formData.password) return '❌ Заполните все обязательные поля';
+    if (formData.password !== formData.password_confirm) return '❌ Пароли не совпадают';
+    if (formData.password.length < 6) return '❌ Пароль слишком короткий (мин. 6 символов)';
     return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -88,40 +55,16 @@ const Register = () => {
     }
 
     setLoading(true);
-
     try {
       const result = await register(formData);
-
       if (result.success) {
-        alert('✅ Регистрация успешна! Теперь войдите.');
-        handleClear();
-        navigate('/login');
+        // ✅ ТЕПЕРЬ СРАЗУ НА ГЛАВНУЮ (так как AuthContext сохранил сессию)
+        navigate('/');
       } else {
-        // ✅ Показываем понятную ошибку от сервера
-        const serverError = result.error;
-        if (serverError && typeof serverError === 'string') {
-          // Парсим JSON ошибку если есть
-          try {
-            const parsed = JSON.parse(serverError);
-            if (parsed.username) {
-              setError('❌ ' + parsed.username[0]);
-            } else if (parsed.password) {
-              setError('❌ ' + parsed.password[0]);
-            } else if (parsed.detail) {
-              setError('❌ ' + parsed.detail);
-            } else {
-              setError('❌ Ошибка регистрации');
-            }
-          } catch {
-            setError('❌ ' + serverError);
-          }
-        } else {
-          setError('❌ Ошибка регистрации');
-        }
+        setError(result.error || 'Ошибка при регистрации');
       }
     } catch (err) {
-      console.error('❌ Ошибка:', err);
-      setError('❌ Произошла ошибка. Попробуйте снова.');
+      setError('Соединение с сервером разорвано');
     } finally {
       setLoading(false);
     }
@@ -129,176 +72,103 @@ const Register = () => {
 
   return (
     <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <h1 className="auth-title">РЕГИСТРАЦИЯ</h1>
-          <p className="auth-subtitle">
-            Уже есть аккаунт? <Link to="/login" className="auth-link">Войти</Link>
+      <div className="auth-container-premium">
+        <div className="auth-header-p">
+          <div className="flex justify-center mb-6 text-accent">
+            <LogoIcon />
+          </div>
+          <h1 className="auth-title-p gradient-text">Создать Аккаунт</h1>
+          <p className="auth-subtitle-p">
+            Уже есть аккаунт? <Link to="/login" className="auth-link-p">Войти</Link>
           </p>
         </div>
 
         {error && (
-          <div className="auth-error">
-            ⚠️ {error}
-            <button type="button" onClick={() => setError('')} className="error-close">✕</button>
+          <div className="error-banner-p">
+            <span>{error}</span>
+            <button onClick={() => setError('')} className="bg-none border-none text-inherit cursor-pointer">✕</button>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="auth-form" noValidate>
-          <div className="form-row">
-            <div className="form-group">
-              <label className="auth-label" htmlFor="username">Имя пользователя *</label>
-              <input
-                id="username"
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                placeholder="username (только латиница)"
-                className="auth-input"
-                disabled={loading}
-                autoComplete="username"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck="false"
-                pattern="[a-zA-Z0-9@./+\-_]+"
-                title="Только буквы, цифры и @/./+/-/_"
-              />
-              <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                Только латиница, цифры и @/./+/-/_
-              </small>
-            </div>
-
-            <div className="form-group">
-              <label className="auth-label" htmlFor="email">Email *</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="email@example.com"
-                className="auth-input"
-                disabled={loading}
-                autoComplete="email"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="auth-form-p">
+          <div className="input-group-p">
+            <label className="label-p">Имя пользователя</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Уникальный никнейм"
+              className="auth-input-p"
+              disabled={loading}
+            />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="auth-label" htmlFor="first_name">Имя</label>
-              <input
-                id="first_name"
-                type="text"
-                name="first_name"
-                value={formData.first_name}
-                onChange={handleChange}
-                placeholder="Иван"
-                className="auth-input"
-                disabled={loading}
-                autoComplete="given-name"
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="auth-label" htmlFor="last_name">Фамилия</label>
-              <input
-                id="last_name"
-                type="text"
-                name="last_name"
-                value={formData.last_name}
-                onChange={handleChange}
-                placeholder="Иванов"
-                className="auth-input"
-                disabled={loading}
-                autoComplete="family-name"
-              />
-            </div>
+          <div className="input-group-p">
+            <label className="label-p">Электронная Почта</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              className="auth-input-p"
+              disabled={loading}
+            />
           </div>
 
-          <div className="form-group">
-            <label className="auth-label" htmlFor="password">Пароль *</label>
-            <div style={{ position: 'relative' }}>
+          <div className="input-group-p">
+            <label className="label-p">Секретный Ключ (Пароль)</label>
+            <div className="input-wrapper-p">
               <input
-                id="password"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                required
-                placeholder="•••••••• (мин. 6 символов)"
-                className="auth-input"
-                style={{ paddingRight: '40px' }}
+                placeholder="Придумайте сложный пароль"
+                className="auth-input-p"
                 disabled={loading}
-                autoComplete="new-password"
-                minLength={6}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                }}
-                tabIndex={-1}
-              >
+              <button type="button" className="eye-btn-p" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
-            <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-              Мин. 6 символов, не только цифры
-            </small>
           </div>
 
-          <div className="form-group">
-            <label className="auth-label" htmlFor="password_confirm">Подтверждение пароля *</label>
+          <div className="input-group-p">
+            <label className="label-p">Подтверждение Ключа</label>
             <input
-              id="password_confirm"
               type={showPassword ? 'text' : 'password'}
               name="password_confirm"
               value={formData.password_confirm}
               onChange={handleChange}
-              required
-              placeholder="••••••••"
-              className="auth-input"
+              placeholder="Повторите ваш пароль"
+              className="auth-input-p"
               disabled={loading}
-              autoComplete="new-password"
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <button type="submit" disabled={loading} className="auth-btn" style={{ flex: 1 }}>
-              {loading ? '⏳ Регистрация...' : <><RegisterIcon /> Зарегистрироваться</>}
+          <div className="auth-actions-p">
+            <button 
+              type="submit" 
+              className="submit-btn-p"
+              disabled={loading}
+            >
+              {loading ? 'Создание...' : <><RegisterIcon /> Зарегистрироваться</>}
             </button>
             <button 
               type="button" 
-              onClick={handleClear} 
+              className="reset-btn-p"
+              onClick={handleClear}
               disabled={loading}
-              className="auth-btn" 
-              style={{ 
-                flex: 0.4, 
-                background: 'var(--bg-secondary)',
-                border: '2px solid var(--border-color)',
-                color: 'var(--text-secondary)',
-              }}
             >
-              🗑️
+              <TrashIcon />
             </button>
           </div>
         </form>
 
-        <div className="auth-footer">
-          <p>Нажимая кнопку, вы соглашаетесь с условиями использования</p>
+        <div className="auth-footer-p">
+          <p className="text-xs opacity-50">Присоединяясь, вы соглашаетесь с условиями дропов.</p>
         </div>
       </div>
     </div>

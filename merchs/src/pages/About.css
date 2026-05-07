@@ -140,39 +140,88 @@
   text-transform: uppercase;
 }
 
-/* Stats Counter */
+/* Stats Counter - Marquee Effect */
 .about-stats {
-  padding: 6rem 0;
+  padding: 4rem 0;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+  background: var(--bg-primary);
+  position: relative;
+  width: 100%;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+.about-stats::before,
+.about-stats::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.about-stats::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-primary) 0%, transparent 100%);
+}
+
+.about-stats::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-primary) 0%, transparent 100%);
+}
+
+.marquee-container {
+  display: flex;
+  width: max-content;
+  animation: marqueeRight 30s linear infinite;
+}
+
+.stats-track {
+  display: flex;
+  align-items: center;
+  gap: 8rem;
+  padding: 0 4rem;
 }
 
 .stat-box {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
 }
 
 .stat-val {
-  font-size: 4.5rem;
+  font-size: 5rem;
   font-weight: 950;
   line-height: 1;
-  margin-bottom: 0.5rem;
   background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .stat-desc {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
   color: var(--accent-primary);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.2em;
+}
+
+.marquee-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--accent-primary-alpha);
+  opacity: 0.6;
+}
+
+@keyframes marqueeRight {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Modern Team */
@@ -200,64 +249,115 @@
 
 .team-item {
   position: relative;
-  border-radius: 32px;
+  border-radius: 40px;
   overflow: hidden;
-  background: var(--bg-elevated);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  aspect-ratio: 4/5;
+  aspect-ratio: 1/1.2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 2.5rem;
-  transition: all 0.5s ease;
+  padding: 3rem;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
 }
 
 .team-item::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 0%, var(--accent-primary-alpha) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
   z-index: 1;
 }
 
+.team-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.75s;
+}
+
 .team-item:hover {
-  transform: scale(1.02);
+  transform: translateY(-15px) scale(1.02);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 30px var(--accent-primary-alpha);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px var(--accent-primary-alpha);
+}
+
+.team-item:hover::before {
+  opacity: 0.3;
+}
+
+.team-item:hover::after {
+  left: 125%;
 }
 
 .team-icon-float {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 2.5rem;
+  left: 2.5rem;
   color: var(--accent-primary);
-  opacity: 0.3;
-  transition: all 0.3s ease;
+  opacity: 0.2;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 2;
+  transform: scale(1.5);
 }
 
 .team-item:hover .team-icon-float {
   opacity: 1;
-  transform: rotate(15deg) scale(1.2);
+  transform: scale(2) rotate(15deg);
+  color: var(--accent-primary);
 }
 
 .team-info-wrap {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .team-name {
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 950;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .team-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--accent-primary);
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
+  letter-spacing: 0.2em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.team-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  margin-top: 0;
+}
+
+.team-item:hover .team-desc {
+  max-height: 100px;
+  opacity: 1;
+  margin-top: 1rem;
 }
 
 /* CTA Redesign */
@@ -284,8 +384,42 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 50%);
   animation: rotate 20s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Floating Icons in CTA */
+.cta-floating-icons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.2;
+}
+
+.cta-floating-icons svg {
+  position: absolute;
+  color: white;
+  animation: floatCTA 6s ease-in-out infinite;
+}
+
+.cta-floating-icons svg:nth-child(1) { top: 15%; left: 10%; width: 64px; height: 64px; animation-delay: 0s; }
+.cta-floating-icons svg:nth-child(2) { top: 65%; left: 15%; width: 48px; height: 48px; animation-delay: 1s; }
+.cta-floating-icons svg:nth-child(3) { top: 20%; right: 12%; width: 56px; height: 56px; animation-delay: 2s; }
+.cta-floating-icons svg:nth-child(4) { top: 70%; right: 15%; width: 40px; height: 40px; animation-delay: 3s; }
+
+@keyframes floatCTA {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(15deg); }
+}
+
+.cta-title-alt, 
+.cta-subtitle, 
+.cta-button-premium {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes rotate {
@@ -307,26 +441,37 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem 4rem;
-  background: var(--text-inverse);
-  color: var(--text-primary);
+  background: #ffffff;
+  color: #000000;
   border-radius: 100px;
-  font-weight: 900;
+  font-weight: 950;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  border: 2px solid var(--text-inverse);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid #ffffff;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .cta-button-premium:hover {
   background: transparent;
   color: var(--text-inverse);
-  transform: scale(1.05);
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.cta-button-premium svg {
+  transition: transform 0.3s ease;
+}
+
+.cta-button-premium:hover svg {
+  transform: rotate(180deg) translateX(-5px);
 }
 
 /* Responsive */
 @media (max-width: 1100px) {
   .team-layout { grid-template-columns: repeat(2, 1fr); }
   .values-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 4rem; }
+  .marquee-container { animation-duration: 20s; }
 }
 
 @media (max-width: 768px) {

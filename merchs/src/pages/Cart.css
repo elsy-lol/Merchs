@@ -283,3 +283,141 @@
     grid-row: 1;
   }
 }
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+/* Keyframes */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px var(--accent-primary-alpha); }
+  50% { transform: translateY(-6px); box-shadow: 0 20px 45px var(--accent-primary-alpha); }
+}
+
+@keyframes emptyBounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-12px) rotate(5deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { border-color: rgba(255, 0, 110, 0.15); box-shadow: none; }
+  50% { border-color: rgba(255, 0, 110, 0.4); box-shadow: 0 0 25px rgba(255, 0, 110, 0.12); }
+}
+
+@keyframes countPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); color: var(--accent-primary); }
+  100% { transform: scale(1); }
+}
+
+/* Staggered item entrance */
+.cart-item-premium {
+  animation: slideUpFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.cart-item-premium:nth-child(1) { animation-delay: 0.05s; }
+.cart-item-premium:nth-child(2) { animation-delay: 0.15s; }
+.cart-item-premium:nth-child(3) { animation-delay: 0.25s; }
+.cart-item-premium:nth-child(4) { animation-delay: 0.35s; }
+.cart-item-premium:nth-child(n+5) { animation-delay: 0.45s; }
+
+/* Removing animation */
+.cart-item-premium.removing {
+  animation: none;
+  opacity: 0;
+  transform: translateX(-30px) scale(0.95);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Summary card animated border */
+.cart-summary-premium {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both, glowPulse 4s ease-in-out infinite;
+}
+
+/* Floating checkout button */
+.checkout-btn-premium {
+  animation: floatPulse 3s ease-in-out infinite;
+}
+
+.checkout-btn-premium:hover {
+  animation: none;
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 50px var(--accent-primary-alpha);
+}
+
+/* Image shimmer on hover */
+.cart-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 20px;
+}
+
+.cart-item-premium:hover .cart-img-wrap::after {
+  opacity: 1;
+  animation: shimmer 1.2s linear infinite;
+}
+
+.cart-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Quantity button bounce */
+.q-btn:active {
+  transform: scale(0.85);
+}
+
+.quantity-control-p span {
+  min-width: 24px;
+  text-align: center;
+  display: inline-block;
+  transition: all 0.15s ease;
+}
+
+/* Empty state icon bounce */
+.empty-icon-wrap {
+  animation: emptyBounce 2.5s ease-in-out infinite;
+}
+
+/* Cart title fade in */
+.cart-title {
+  animation: slideUpFade 0.5s ease both;
+}
+
+/* Total value pop on change */
+.total-value-premium {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

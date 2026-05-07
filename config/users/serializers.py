@@ -19,12 +19,15 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'role',
+            'phone',
             'is_verified_seller',
             'seller_rating',
             'bio',
             'balance',
             'avatar',
             'date_joined',
+            'is_2fa_enabled',
+            'two_factor_method',
         ]
         read_only_fields = [
             'id',
@@ -129,16 +132,21 @@ class ProfileSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'role',
+            'phone',
             'is_verified_seller',
             'seller_rating',
             'bio',
             'balance',
             'avatar',
+            'is_2fa_enabled',
+            'two_factor_method',
         ]
         read_only_fields = [
             'id',
             'seller_rating',
             'balance',
+            'is_2fa_enabled',
+            'two_factor_method',
         ]
 
 
@@ -171,4 +179,16 @@ class LoginSerializer(serializers.Serializer):
         if not username or not password:
             raise serializers.ValidationError('Имя пользователя и пароль обязательны')
 
+        return attrs
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    """✅ Сериализатор смены пароля"""
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, min_length=6)
+    new_password_confirm = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password_confirm']:
+            raise serializers.ValidationError({"new_password_confirm": "Пароли не совпадают"})
         return attrs

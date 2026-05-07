@@ -15,6 +15,7 @@ const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [removingId, setRemovingId] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -50,21 +51,23 @@ const Wishlist = () => {
   };
 
   const removeFromWishlist = async (wishlistId) => {
-    try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:8000/api/shop/wishlist/${wishlistId}/`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      
-      if (response.ok || response.status === 204) {
-        setWishlist(prev => prev.filter(item => item.id !== wishlistId));
+    // Animate out first
+    setRemovingId(wishlistId);
+    setTimeout(async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`http://localhost:8000/api/shop/wishlist/${wishlistId}/`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (response.ok || response.status === 204) {
+          setWishlist(prev => prev.filter(item => item.id !== wishlistId));
+        }
+      } catch (error) {
+        console.error('❌ Ошибка:', error);
       }
-    } catch (error) {
-      console.error('❌ Ошибка:', error);
-    }
+      setRemovingId(null);
+    }, 400);
   };
 
   if (!isAuthenticated) {
@@ -111,11 +114,15 @@ const Wishlist = () => {
           </div>
         ) : (
           <div className="wishlist-grid-premium">
-            {wishlist.map((item) => {
+            {wishlist.map((item, index) => {
               if (!item.product) return null;
               
               return (
-                <div key={item.id} className="wishlist-item-wrapper">
+                <div 
+                  key={item.id} 
+                  className={`wishlist-item-wrapper ${removingId === item.id ? 'removing' : ''}`}
+                  style={{ animationDelay: `${index * 0.08}s` }}
+                >
                   <ProductCard product={item.product} />
                   
                   {/* Overlay Remove Button */}
